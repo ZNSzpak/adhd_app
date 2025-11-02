@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/baseline_calendar_month_24"
+            android:title="@string/menu_home" />
+        <item
+            android:id="@+id/nav_plan"
+            android:icon="@drawable/baseline_calendar_view_week_24"
+            android:title="@string/menu_plan" />
+        <item
+            android:id="@+id/nav_routines"
+            android:icon="@drawable/baseline_format_list_numbered_24"
+            android:title="@string/menu_routines" />
+
+        <item
+            android:id="@+id/nav_todolist"
+            android:icon="@drawable/baseline_checklist_24"
+            android:title="@string/menu_todolist" />
+
+        <item
+            android:id="@+id/nav_slideshow"
+            android:icon="@drawable/baseline_edit_note_24"
+            android:title="@string/menu_notes" />
+    </group>
+</menu>

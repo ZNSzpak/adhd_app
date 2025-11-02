@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Projekt_inz</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Kalendarz</string>
+    <string name="menu_plan">Plan Lekcji</string>
+    <string name="menu_routines">Rutyny</string>
+    <string name="menu_todolist">Lista Zadań</string>
+    <string name="menu_notes">Notatki</string>
+</resources>
