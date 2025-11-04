@@ -1,22 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="10dp"
+    android:background="@android:color/white"
     tools:context=".ui.plan.PlanFragment">
 
-    <TextView
-        android:id="@+id/text_slideshow"
+
+
+    <!-- Month/Year title -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp">
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="prev"
+            android:textColor="@color/white"
+            android:background="@null"
+            android:textStyle="bold"
+            android:id="@+id/month_navigation_previous"
+
+            android:textSize="20sp"/>
+
+        <TextView
+            android:id="@+id/monthYearTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Listopad 2025"
+            android:layout_weight="2"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="next"
+            android:textColor="@color/white"
+            android:background="@null"
+            android:textStyle="bold"
+            android:id="@+id/month_navigation_next"
+            android:textSize="20sp"/>
+
+    </LinearLayout>
+
+    <!-- Weekday names -->
+    <LinearLayout
+        android:id="@+id/weekDaysRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView android:text="Czas" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="0dp"/>
+        <TextView android:text="Mon" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="0dp"/>
+        <TextView android:text="Tue" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="0dp"/>
+        <TextView android:text="Wed" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="0dp"/>
+        <TextView android:text="Thu" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="0dp"/>
+        <TextView android:text="Fri" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="0dp"/>
+
+    </LinearLayout>
+
+    <!-- Calendar RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/calendarRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>
