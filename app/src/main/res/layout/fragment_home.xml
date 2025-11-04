@@ -7,6 +7,16 @@
     android:padding="10dp"
     android:background="@android:color/white">
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Weekly"
+        android:textColor="@color/white"
+        android:background="@null"
+        android:textStyle="bold"
+        android:id="@+id/weekly_button"
+        android:layout_gravity="center"
+        android:textSize="20sp"/>
     <!-- Month/Year title -->
     <LinearLayout
         android:layout_width="match_parent"
