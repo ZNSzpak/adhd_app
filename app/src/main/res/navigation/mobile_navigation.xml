@@ -11,9 +11,9 @@
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
     <fragment
-        android:id="@+id/planFragment"
+        android:id="@+id/nav_plan"
         android:name="com.example.projekt_inz.ui.plan.PlanFragment"
-        android:label="fragment_plan"
+        android:label="@string/menu_plan"
         tools:layout="@layout/fragment_plan" />
 
 </navigation>

@@ -12,6 +12,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projekt_inz.R
+
+
 class HomeFragment : Fragment(), CalendarAdapter.OnItemListener {
 
     private lateinit var monthYearText: TextView
@@ -46,6 +48,12 @@ class HomeFragment : Fragment(), CalendarAdapter.OnItemListener {
         view.findViewById<Button>(R.id.month_navigation_next).setOnClickListener {
             viewModel.nextMonth()
         }
+
+// kod związany z weekly events
+//        view.findViewById<Button>(R.id.weekly_button).setOnClickListener {
+//            val intent = Intent(requireContext(), WeekViewActivity::class.java)
+//            startActivity(intent)
+//        }
 
         return view
     }

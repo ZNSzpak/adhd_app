@@ -8,6 +8,7 @@ import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+
 class HomeViewModel : ViewModel() {
 
     private var selectedDate: LocalDate = LocalDate.now()
@@ -53,4 +54,5 @@ class HomeViewModel : ViewModel() {
             for (day in 1..daysInMonth) add(day.toString())
         }
     }
+
 }
