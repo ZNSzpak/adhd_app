@@ -11,48 +11,62 @@ import java.util.Locale
 
 class HomeViewModel : ViewModel() {
 
-    private var selectedDate: LocalDate = LocalDate.now()
-
-    private val _daysInMonth = MutableLiveData<List<String>>()
-    val daysInMonth: LiveData<List<String>> = _daysInMonth
+    private val _selectedDate = MutableLiveData(LocalDate.now())
+    val selectedDate: LiveData<LocalDate> = _selectedDate
 
     private val _monthYearText = MutableLiveData<String>()
     val monthYearText: LiveData<String> = _monthYearText
+
+    private val _daysInMonth = MutableLiveData<List<LocalDate?>>()
+    val daysInMonth: LiveData<List<LocalDate?>> = _daysInMonth
 
     init {
         updateMonthView()
     }
 
+    private fun updateMonthView() {
+        val current = _selectedDate.value ?: LocalDate.now()
+        _monthYearText.value = monthYearFromDate(current)
+        _daysInMonth.value = daysInMonthArray(current)
+    }
+
+    fun selectDate(date: LocalDate) {
+        _selectedDate.value = date
+        updateMonthView()
+    }
+
     fun previousMonth() {
-        selectedDate = selectedDate.minusMonths(1)
+        _selectedDate.value = _selectedDate.value?.minusMonths(1)
         updateMonthView()
     }
 
     fun nextMonth() {
-        selectedDate = selectedDate.plusMonths(1)
+        _selectedDate.value = _selectedDate.value?.plusMonths(1)
         updateMonthView()
     }
 
-    private fun updateMonthView() {
-        _monthYearText.value = monthYearFromDate(selectedDate)
-        _daysInMonth.value = daysInMonthArray(selectedDate)
-    }
 
-    private fun monthYearFromDate(date: LocalDate): String {
+    fun monthYearFromDate(date: LocalDate): String {
         val formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault())
         return date.format(formatter)
     }
 
-    private fun daysInMonthArray(date: LocalDate): List<String> {
+    fun daysInMonthArray(date: LocalDate): List<LocalDate?> {
+        val daysInMonthArray = mutableListOf<LocalDate?>()
         val yearMonth = YearMonth.from(date)
         val daysInMonth = yearMonth.lengthOfMonth()
         val firstOfMonth = date.withDayOfMonth(1)
-        val firstDayOfWeekIndex = (firstOfMonth.dayOfWeek.value + 6) % 7
+        val dayOfWeek = firstOfMonth.dayOfWeek.value // Monday = 1
 
-        return buildList {
-            repeat(firstDayOfWeekIndex) { add("") }
-            for (day in 1..daysInMonth) add(day.toString())
+        for (i in 1..42) {
+            val day = if (i <= dayOfWeek || i > daysInMonth + dayOfWeek) {
+                null
+            } else {
+                LocalDate.of(date.year, date.month, i - dayOfWeek)
+            }
+            daysInMonthArray.add(day)
         }
+        return daysInMonthArray
     }
 
 }

@@ -1,21 +1,45 @@
 package com.example.projekt_inz.ui.home
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.view.View
+import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.projekt_inz.R
+import com.example.projekt_inz.ui.home.CalendarUtils.formattedDate
+import com.example.projekt_inz.ui.home.CalendarUtils.formattedTime
+import java.time.LocalTime
+
 
 class EventEditActivity : AppCompatActivity() {
+
+    private lateinit var eventNameET: EditText
+    private lateinit var eventDateTV: TextView
+    private lateinit var eventTimeTV: TextView
+
+    private var time: LocalTime = LocalTime.now()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_event_edit)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        initWidgets()
+
+        eventDateTV.text = "Date: ${CalendarUtils.formattedDate(CalendarUtils.selectedDate)}"
+        eventTimeTV.text = "Time: ${CalendarUtils.formattedTime(time)}"
+    }
+
+    private fun initWidgets() {
+        eventNameET = findViewById(R.id.eventNameET)
+        eventDateTV = findViewById(R.id.eventDateTV)
+        eventTimeTV = findViewById(R.id.eventTimeTV)
+    }
+
+    fun saveEventAction(view: View) {
+        val eventName = eventNameET.text.toString().trim()
+        if (eventName.isNotEmpty()) {
+            val newEvent = Event(eventName, CalendarUtils.selectedDate, time)
+            Event.eventsList.add(newEvent)
         }
+        finish()
     }
 }

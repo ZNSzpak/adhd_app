@@ -5,15 +5,12 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ListView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projekt_inz.R
 import java.time.LocalDate
+
 
 class WeekViewActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
 
@@ -35,14 +32,22 @@ class WeekViewActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
     }
 
     private fun setWeekView() {
+//// pokazywanie pierwszego tygodnia pokazywanego miesiąca
+//        val firstDayOfMonth = CalendarUtils.selectedDate.withDayOfMonth(1)
+//        val startOfWeek = firstDayOfMonth.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY))
+//        CalendarUtils.selectedDate = startOfWeek
+//      //end
+
+
         monthYearText.text = CalendarUtils.monthYearFromDate(CalendarUtils.selectedDate)
         val days = CalendarUtils.daysInWeekArray(CalendarUtils.selectedDate)
 
-//        val calendarAdapter = CalendarAdapter(days, this)
-//        calendarRecyclerView.layoutManager = GridLayoutManager(this, 7)
-//        calendarRecyclerView.adapter = calendarAdapter
+        val calendarAdapter = CalendarAdapter(days, this)
+        val layoutManager = GridLayoutManager(this, 7)
+        calendarRecyclerView.layoutManager = layoutManager
+        calendarRecyclerView.adapter = calendarAdapter
 
-       // setEventAdapter()
+        setEventAdapter()
     }
 
     fun previousWeekAction(view: View) {
@@ -55,29 +60,23 @@ class WeekViewActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
         setWeekView()
     }
 
-    override fun onItemClick(position: Int, dayText: String?) {
-        // You may need to adapt CalendarAdapter to pass LocalDate instead of String
-        // For now, let's assume CalendarUtils handles it
-        Toast.makeText(this, "Clicked $dayText", Toast.LENGTH_SHORT).show()
+    override fun onItemClick(position: Int, date: LocalDate?) {
+        if (date != null) {
+            CalendarUtils.selectedDate = date
+        };
+        setWeekView();
     }
 
-//    override fun onItemClick(position: Int, date: LocalDate?) {
-//        if (date != null) {
-//            CalendarUtils.selectedDate = date
-//            setWeekView()
-//        }
-//    }
-//
-//    override fun onResume() {
-//        super.onResume()
-//        setEventAdapter()
-//    }
+    override fun onResume() {
+        super.onResume()
+        setEventAdapter()
+    }
 
-//    private fun setEventAdapter() {
-//        val dailyEvents = Event.eventsForDate(CalendarUtils.selectedDate)
-//        val eventAdapter = EventAdapter(this, dailyEvents)
-//        eventListView.adapter = eventAdapter
-//    }
+    private fun setEventAdapter() {
+        val dailyEvents: ArrayList<Event> = Event.eventsForDate(CalendarUtils.selectedDate)
+        val eventAdapter = EventAdapter(applicationContext, dailyEvents)
+        eventListView.adapter = eventAdapter
+    }
 
     fun newEventAction(view: View) {
         startActivity(Intent(this, EventEditActivity::class.java))

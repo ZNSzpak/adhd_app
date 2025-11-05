@@ -1,5 +1,6 @@
 package com.example.projekt_inz.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projekt_inz.R
+import java.time.DayOfWeek
+import java.time.LocalDate
 
 
 class HomeFragment : Fragment(), CalendarAdapter.OnItemListener {
@@ -30,17 +33,6 @@ class HomeFragment : Fragment(), CalendarAdapter.OnItemListener {
 
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
 
-        viewModel.daysInMonth.observe(viewLifecycleOwner) { days ->
-            val adapter = CalendarAdapter(days, this)
-            calendarRecyclerView.layoutManager = GridLayoutManager(requireContext(), 7)
-            calendarRecyclerView.adapter = adapter
-        }
-
-        viewModel.monthYearText.observe(viewLifecycleOwner) { text ->
-            monthYearText.text = text
-        }
-
-
         view.findViewById<Button>(R.id.month_navigation_previous).setOnClickListener {
             viewModel.previousMonth()
         }
@@ -49,16 +41,62 @@ class HomeFragment : Fragment(), CalendarAdapter.OnItemListener {
             viewModel.nextMonth()
         }
 
-// kod związany z weekly events
-//        view.findViewById<Button>(R.id.weekly_button).setOnClickListener {
-//            val intent = Intent(requireContext(), WeekViewActivity::class.java)
-//            startActivity(intent)
-//        }
+ 
+//weekly_button
 
+        val weeklyViewButton = view.findViewById<Button>(R.id.weekly_button)
+
+        weeklyViewButton.setOnClickListener {
+            weeklyAction()
+        }
+
+        observeViewModel()
         return view
     }
 
-    override fun onItemClick(position: Int, dayText: String?) {
-        Toast.makeText(requireContext(), "Clicked day: $dayText", Toast.LENGTH_SHORT).show()
+    private fun observeViewModel() {
+        viewModel.monthYearText.observe(viewLifecycleOwner) { text ->
+            monthYearText.text = text
+        }
+
+        viewModel.daysInMonth.observe(viewLifecycleOwner) { days ->
+            val calendarAdapter = CalendarAdapter(days, this)
+            calendarRecyclerView.layoutManager = GridLayoutManager(requireContext(), 7)
+            calendarRecyclerView.adapter = calendarAdapter
+        }
+    }
+
+
+    private fun setMonthView(date: LocalDate) {
+        monthYearText.text = viewModel.monthYearFromDate(date)
+        val daysInMonth = viewModel.daysInMonthArray(date)
+
+        val calendarAdapter = CalendarAdapter(daysInMonth, this)
+        calendarRecyclerView.layoutManager = GridLayoutManager(requireContext(), 7)
+        calendarRecyclerView.adapter = calendarAdapter
+    }
+    
+    //kod związany z weekly events
+    private fun weeklyAction() {
+        // Reset to the first week of the current month
+//        val firstDayOfMonth = CalendarUtils.selectedDate.withDayOfMonth(1)
+//        CalendarUtils.selectedDate = if (firstDayOfMonth.dayOfWeek == DayOfWeek.MONDAY) {
+//            firstDayOfMonth
+//        } else {
+//            firstDayOfMonth.plusDays((8 - firstDayOfMonth.dayOfWeek.value).toLong())
+//        }
+
+        CalendarUtils.selectedDate = CalendarUtils.selectedDate.with(
+            java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY)
+        )
+
+        startActivity(Intent(requireContext(), WeekViewActivity::class.java))
+    }
+
+    override fun onItemClick(position: Int, date: LocalDate?) {
+        if (date != null) {
+            viewModel.selectDate(date)
+            Toast.makeText(requireContext(), "Selected ${viewModel.monthYearFromDate(date)}", Toast.LENGTH_SHORT).show()
+        }
     }
 }

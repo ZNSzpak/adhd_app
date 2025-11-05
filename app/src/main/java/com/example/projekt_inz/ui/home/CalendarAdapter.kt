@@ -1,14 +1,16 @@
 package com.example.projekt_inz.ui.home
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projekt_inz.R
+import java.time.LocalDate
 
 
 class CalendarAdapter(
-    private val daysOfMonth: List<String>,
+    private val days: List<LocalDate?>,
     private val onItemListener: OnItemListener
 ) :
     RecyclerView.Adapter<CalendarViewHolder>() {
@@ -16,19 +18,23 @@ class CalendarAdapter(
         val inflater = LayoutInflater.from(parent.context)
         val view: View = inflater.inflate(R.layout.calendar_cell, parent, false)
         val layoutParams = view.layoutParams
-        layoutParams.height = (parent.height * 0.166666666).toInt()
-        return CalendarViewHolder(view, onItemListener)
+        if (days.size > 15)  //month view
+            layoutParams.height = (parent.height * 0.166666666).toInt()
+        else  // week view
+            layoutParams.height = parent.height
+        return CalendarViewHolder(view, onItemListener, days)
     }
 
-    override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
-        holder.dayOfMonth.text = daysOfMonth[position]
+    override fun onBindViewHolder( holder: CalendarViewHolder, position: Int) {
+        val date = days[position]
+        holder.dayOfMonth.text = date?.dayOfMonth?.toString() ?: ""
     }
 
     override fun getItemCount(): Int {
-        return daysOfMonth.size
+        return days.size
     }
 
     interface OnItemListener {
-        fun onItemClick(position: Int, dayText: String?)
+        fun onItemClick(position: Int, date: LocalDate?)
     }
 }
