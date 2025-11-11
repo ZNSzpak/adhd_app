@@ -12,7 +12,7 @@ class CalendarViewHolder(itemView: View,
     RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
     val dayOfMonth: TextView = itemView.findViewById(R.id.cellDayText)
-   // val parentView: View = itemView.findViewById(R.id.parentView)
+    val parentView: View = itemView.findViewById(R.id.parentView)
 
     init {
         itemView.setOnClickListener(this)

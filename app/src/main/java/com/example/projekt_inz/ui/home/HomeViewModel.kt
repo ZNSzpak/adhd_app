@@ -51,12 +51,13 @@ class HomeViewModel : ViewModel() {
         return date.format(formatter)
     }
 
+
     fun daysInMonthArray(date: LocalDate): List<LocalDate?> {
         val daysInMonthArray = mutableListOf<LocalDate?>()
         val yearMonth = YearMonth.from(date)
         val daysInMonth = yearMonth.lengthOfMonth()
         val firstOfMonth = date.withDayOfMonth(1)
-        val dayOfWeek = firstOfMonth.dayOfWeek.value // Monday = 1
+        val dayOfWeek = (firstOfMonth.dayOfWeek.value + 6) % 7
 
         for (i in 1..42) {
             val day = if (i <= dayOfWeek || i > daysInMonth + dayOfWeek) {
@@ -68,5 +69,26 @@ class HomeViewModel : ViewModel() {
         }
         return daysInMonthArray
     }
+
+//    fun daysInMonthArray(date: LocalDate): List<LocalDate?> {
+//        val daysInMonthArray = mutableListOf<LocalDate?>()
+//        val yearMonth = YearMonth.from(date)
+//        val daysInMonth = yearMonth.lengthOfMonth()
+//
+//        val firstOfMonth = date.withDayOfMonth(1)
+//        val dayOfWeek = (firstOfMonth.dayOfWeek.value + 6) % 7  // Monday = 0
+//
+//        for (i in 1..42) {
+//            if (i <= dayOfWeek || i > daysInMonth + dayOfWeek) {
+//                daysInMonthArray.add(null)
+//            } else {
+//                daysInMonthArray.add(
+//                    LocalDate.of(date.year, date.month, i - dayOfWeek)
+//                )
+//            }
+//        }
+//        return daysInMonthArray
+//    }
+//
 
 }

@@ -85,6 +85,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:text="new event"
+        android:onClick="newEventAction"
         android:textColor="@color/white"
         android:background="@null"
         android:textStyle="bold"

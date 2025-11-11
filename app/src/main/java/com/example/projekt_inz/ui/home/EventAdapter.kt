@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter
 class EventAdapter(
     context: Context,
     private val events: List<Event>
-) : ArrayAdapter<Event>(context, 0, events) {
+) : ArrayAdapter<Event>(context,0, events) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(context)

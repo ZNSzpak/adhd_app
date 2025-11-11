@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.projekt_inz.R
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.YearMonth
 
 
 class HomeFragment : Fragment(), CalendarAdapter.OnItemListener {
@@ -67,9 +68,9 @@ class HomeFragment : Fragment(), CalendarAdapter.OnItemListener {
     }
 
 
-    private fun setMonthView(date: LocalDate) {
-        monthYearText.text = viewModel.monthYearFromDate(date)
-        val daysInMonth = viewModel.daysInMonthArray(date)
+    private fun setMonthView() {
+        monthYearText.text = viewModel.monthYearFromDate(CalendarUtils.selectedDate)
+        val daysInMonth = viewModel.daysInMonthArray(CalendarUtils.selectedDate)
 
         val calendarAdapter = CalendarAdapter(daysInMonth, this)
         calendarRecyclerView.layoutManager = GridLayoutManager(requireContext(), 7)
@@ -93,10 +94,21 @@ class HomeFragment : Fragment(), CalendarAdapter.OnItemListener {
         startActivity(Intent(requireContext(), WeekViewActivity::class.java))
     }
 
+//    override fun onItemClick(position: Int, date: LocalDate?) {
+//        if (date != null) {
+//            viewModel.selectDate(date)
+//            Toast.makeText(requireContext(), "Selected ${viewModel.monthYearFromDate(date)}", Toast.LENGTH_SHORT).show()
+//        }
+//    }
+
+
     override fun onItemClick(position: Int, date: LocalDate?) {
         if (date != null) {
-            viewModel.selectDate(date)
-            Toast.makeText(requireContext(), "Selected ${viewModel.monthYearFromDate(date)}", Toast.LENGTH_SHORT).show()
+            CalendarUtils.selectedDate = date
+            setMonthView();
         }
+
     }
+
+
 }
