@@ -2,6 +2,7 @@ package com.example.projekt_inz.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.ListView
 import android.widget.TextView
@@ -21,9 +22,27 @@ class WeekViewActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_week_view)
+        //toolbar
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true) // shows ←
+            title = ""
+        }
+
+
         initWidgets()
         setWeekView()
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressedDispatcher.onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
 
     private fun initWidgets() {
         calendarRecyclerView = findViewById(R.id.calendarRecyclerView)

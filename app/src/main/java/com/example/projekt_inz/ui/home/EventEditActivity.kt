@@ -1,6 +1,7 @@
 package com.example.projekt_inz.ui.home
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
@@ -22,10 +23,26 @@ class EventEditActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_event_edit)
+        //toolbar
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true) // shows ←
+            title = ""
+        }
+
         initWidgets()
 
         eventDateTV.text = "Date: ${CalendarUtils.formattedDate(CalendarUtils.selectedDate)}"
         eventTimeTV.text = "Time: ${CalendarUtils.formattedTime(time)}"
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressedDispatcher.onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun initWidgets() {
