@@ -30,6 +30,16 @@ class WeekViewActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
 
 
         initWidgets()
+
+        //nk
+        val dateString = intent.getStringExtra("selectedDate")
+        CalendarUtils.selectedDate = if (dateString != null) {
+            LocalDate.parse(dateString)
+        } else {
+            LocalDate.now()
+        }
+        //nk
+
         setWeekView()
     }
 
@@ -82,8 +92,9 @@ class WeekViewActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
     override fun onItemClick(position: Int, date: LocalDate?) {
         if (date != null) {
             CalendarUtils.selectedDate = date
-        };
-        setWeekView();
+            setWeekView()
+        }
+
     }
 
     override fun onResume() {
@@ -92,7 +103,7 @@ class WeekViewActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
     }
 
     private fun setEventAdapter() {
-        val dailyEvents: ArrayList<Event> = Event.eventsForDate(CalendarUtils.selectedDate)
+        val dailyEvents: List<Event> = Event.eventsForDate(CalendarUtils.selectedDate)
         val eventAdapter = EventAdapter(applicationContext, dailyEvents)
         eventListView.adapter = eventAdapter
     }

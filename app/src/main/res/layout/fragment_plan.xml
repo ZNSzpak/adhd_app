@@ -1,77 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp"
-    android:background="@android:color/white"
     tools:context=".ui.plan.PlanFragment">
 
-
-
-    <!-- Month/Year title -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp">
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="prev"
-            android:textColor="@color/white"
-            android:background="@null"
-            android:textStyle="bold"
-            android:id="@+id/month_navigation_previous"
+        android:orientation="vertical"
+        android:padding="10dp">
 
-            android:textSize="20sp"/>
-
-        <TextView
-            android:id="@+id/monthYearTV"
-            android:layout_width="0dp"
+        <GridLayout
+            android:id="@+id/timetableGrid"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Listopad 2025"
-            android:layout_weight="2"
-            android:textColor="@color/black"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            />
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="next"
-            android:textColor="@color/white"
-            android:background="@null"
-            android:textStyle="bold"
-            android:id="@+id/month_navigation_next"
-            android:textSize="20sp"/>
+            android:columnCount="6"
+            android:rowCount="12"
+            android:alignmentMode="alignBounds"
+            android:useDefaultMargins="true" />
 
     </LinearLayout>
 
-    <!-- Weekday names -->
-    <LinearLayout
-        android:id="@+id/weekDaysRow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView android:text="Czas" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="0dp"/>
-        <TextView android:text="Mon" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="0dp"/>
-        <TextView android:text="Tue" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="0dp"/>
-        <TextView android:text="Wed" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="0dp"/>
-        <TextView android:text="Thu" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="0dp"/>
-        <TextView android:text="Fri" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="0dp"/>
-
-    </LinearLayout>
-
-    <!-- Calendar RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/calendarRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-</LinearLayout>
+</ScrollView>

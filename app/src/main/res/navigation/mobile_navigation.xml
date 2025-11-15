@@ -15,5 +15,10 @@
         android:name="com.example.projekt_inz.ui.plan.PlanFragment"
         android:label="@string/menu_plan"
         tools:layout="@layout/fragment_plan" />
+    <fragment
+        android:id="@+id/nav_todolist"
+        android:name="com.example.projekt_inz.ui.todolist.ToDoFragment"
+        android:label="@string/menu_todolist"
+        tools:layout="@layout/fragment_todo" />
 
 </navigation>

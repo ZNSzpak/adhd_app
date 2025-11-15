@@ -45,16 +45,27 @@ object CalendarUtils {
         return daysInMonthArray
     }
 
-    fun daysInWeekArray(selectedDate: LocalDate): List<LocalDate> {
-        val days = mutableListOf<LocalDate>()
-        var current = mondayForDate(selectedDate)
-        val endDate = current.plusWeeks(1)
-        while (current.isBefore(endDate)) {
+//    fun daysInWeekArray(selectedDate: LocalDate): List<LocalDate> {
+//        val days = mutableListOf<LocalDate>()
+//        var current = mondayForDate(selectedDate)
+//        val endDate = current.plusWeeks(1)
+//        while (current.isBefore(endDate)) {
+//            days.add(current)
+//            current = current.plusDays(1)
+//        }
+//        return days
+//    }
+
+    fun daysInWeekArray(selectedDate: LocalDate): ArrayList<LocalDate> {
+        val days = ArrayList<LocalDate>()
+        var current = selectedDate.with(DayOfWeek.MONDAY)
+        repeat(7) {
             days.add(current)
             current = current.plusDays(1)
         }
         return days
     }
+
 
     private fun mondayForDate(date: LocalDate): LocalDate {
         var current = date

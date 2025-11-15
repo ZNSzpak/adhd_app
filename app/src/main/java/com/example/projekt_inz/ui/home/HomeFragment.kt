@@ -79,27 +79,22 @@ class HomeFragment : Fragment(), CalendarAdapter.OnItemListener {
     
     //kod związany z weekly events
     private fun weeklyAction() {
-        // Reset to the first week of the current month
-//        val firstDayOfMonth = CalendarUtils.selectedDate.withDayOfMonth(1)
-//        CalendarUtils.selectedDate = if (firstDayOfMonth.dayOfWeek == DayOfWeek.MONDAY) {
-//            firstDayOfMonth
-//        } else {
-//            firstDayOfMonth.plusDays((8 - firstDayOfMonth.dayOfWeek.value).toLong())
-//        }
 
-        CalendarUtils.selectedDate = CalendarUtils.selectedDate.with(
-            java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY)
-        )
 
-        startActivity(Intent(requireContext(), WeekViewActivity::class.java))
+//        CalendarUtils.selectedDate = CalendarUtils.selectedDate.with(
+//            java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY)
+//        )
+//
+//        startActivity(Intent(requireContext(), WeekViewActivity::class.java))
+
+
+            // CalendarUtils.selectedDate should already be correct
+            val intent = Intent(context, WeekViewActivity::class.java)
+            intent.putExtra("selectedDate", CalendarUtils.selectedDate.toString())
+            startActivity(intent)
+
+
     }
-
-//    override fun onItemClick(position: Int, date: LocalDate?) {
-//        if (date != null) {
-//            viewModel.selectDate(date)
-//            Toast.makeText(requireContext(), "Selected ${viewModel.monthYearFromDate(date)}", Toast.LENGTH_SHORT).show()
-//        }
-//    }
 
 
     override fun onItemClick(position: Int, date: LocalDate?) {

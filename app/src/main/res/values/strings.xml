@@ -12,4 +12,6 @@
     <string name="menu_routines">Rutyny</string>
     <string name="menu_todolist">Lista Zadań</string>
     <string name="menu_notes">Notatki</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -30,12 +30,53 @@ class CalendarAdapter(
 //        holder.dayOfMonth.text = date?.dayOfMonth?.toString() ?: ""
 //    }
 
+//    override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
+//        val date = days[position]
+//        if (date == null) holder.dayOfMonth.text = ""
+//        else {
+//            holder.dayOfMonth.text = date.dayOfMonth.toString()
+//
+//            //if (date == CalendarUtils.selectedDate) holder.parentView.setBackgroundColor(Color.LTGRAY)
+//            // nowy kod
+//            // Highlight today's date
+//            if (date == LocalDate.now()) {
+//               // holder.dayOfMonth.setTextColor(Color.BLUE)
+//                holder.parentView.setBackgroundColor(Color.DKGRAY)
+//            }
+//            // Highlight the selected date
+//            else if (date == CalendarUtils.selectedDate) {
+//              //  holder.dayOfMonth.setTextColor(Color.WHITE)
+//                holder.parentView.setBackgroundColor(Color.LTGRAY)
+//            } else {
+//                holder.dayOfMonth.setTextColor(Color.BLACK)
+//                holder.parentView.setBackgroundResource(0)
+//            }
+//        }
+//    }
+
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
         val date = days[position]
-        if (date == null) holder.dayOfMonth.text = ""
-        else {
-            holder.dayOfMonth.text = date.dayOfMonth.toString()
-            if (date == CalendarUtils.selectedDate) holder.parentView.setBackgroundColor(Color.LTGRAY)
+
+        if (date == null) {
+            holder.dayOfMonth.text = ""
+            holder.parentView.setBackgroundResource(0)
+            return
+        }
+
+        holder.dayOfMonth.text = date.dayOfMonth.toString()
+
+        // Highlight today's date
+        when {
+            date.isEqual(LocalDate.now()) -> {
+                holder.parentView.setBackgroundColor(Color.DKGRAY)
+            }
+            date.isEqual(CalendarUtils.selectedDate) -> {
+                holder.parentView.setBackgroundColor(Color.DKGRAY)
+            }
+            else -> {
+                holder.dayOfMonth.setTextColor(Color.BLACK)
+                holder.parentView.setBackgroundResource(0)
+            }
         }
     }
 

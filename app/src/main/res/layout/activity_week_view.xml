@@ -84,12 +84,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:text="new event"
+        android:text="Dodaj wydarzenie"
         android:onClick="newEventAction"
         android:textColor="@color/white"
         android:background="@null"
         android:textStyle="bold"
-        android:id="@+id/new_event"
+        android:id="@+id/newEventButton"
         android:textSize="20sp"/>
     
     <ListView
