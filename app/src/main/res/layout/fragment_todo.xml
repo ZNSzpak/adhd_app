@@ -8,28 +8,30 @@
     tools:context=".ui.todolist.ToDoFragment">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textLista"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:text="Do zrobienia"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:fontFamily="sans-serif"
+        android:text="Lista do zrobienia"
         android:textSize="30sp"
         android:textStyle="bold"
-        android:layout_marginTop="20dp"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.045" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/taskList"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:nestedScrollingEnabled="true"
-        android:layout_below="@+id/textView"/>
+        android:layout_below="@+id/textLista"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addButton"
@@ -40,9 +42,5 @@
         android:layout_margin="40dp"
         android:src="@drawable/baseline_add_24"
         android:backgroundTint="#DD9AEB"/>
-
-
-
-
 
 </RelativeLayout>
