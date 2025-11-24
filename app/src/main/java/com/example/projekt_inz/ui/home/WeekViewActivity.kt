@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.projekt_inz.R
 import java.time.LocalDate
 
-
 class WeekViewActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
 
     private lateinit var monthYearText: TextView
@@ -27,18 +26,14 @@ class WeekViewActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
             setDisplayHomeAsUpEnabled(true) // shows ←
             title = ""
         }
-
-
         initWidgets()
 
-        //nk
         val dateString = intent.getStringExtra("selectedDate")
         CalendarUtils.selectedDate = if (dateString != null) {
             LocalDate.parse(dateString)
         } else {
             LocalDate.now()
         }
-        //nk
 
         setWeekView()
     }
@@ -53,7 +48,6 @@ class WeekViewActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
         }
     }
 
-
     private fun initWidgets() {
         calendarRecyclerView = findViewById(R.id.calendarRecyclerView)
         monthYearText = findViewById(R.id.monthYearTV)
@@ -61,13 +55,6 @@ class WeekViewActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
     }
 
     private fun setWeekView() {
-//// pokazywanie pierwszego tygodnia pokazywanego miesiąca
-//        val firstDayOfMonth = CalendarUtils.selectedDate.withDayOfMonth(1)
-//        val startOfWeek = firstDayOfMonth.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY))
-//        CalendarUtils.selectedDate = startOfWeek
-//      //end
-
-
         monthYearText.text = CalendarUtils.monthYearFromDate(CalendarUtils.selectedDate)
         val days = CalendarUtils.daysInWeekArray(CalendarUtils.selectedDate)
 
@@ -94,7 +81,6 @@ class WeekViewActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
             CalendarUtils.selectedDate = date
             setWeekView()
         }
-
     }
 
     override fun onResume() {

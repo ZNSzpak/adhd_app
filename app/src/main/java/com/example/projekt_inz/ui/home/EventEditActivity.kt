@@ -2,39 +2,27 @@ package com.example.projekt_inz.ui.home
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
-import android.app.DatePickerDialog.OnDateSetListener
 import android.app.TimePickerDialog
-import android.app.TimePickerDialog.OnTimeSetListener
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.projekt_inz.R
-import com.example.projekt_inz.ui.home.CalendarUtils.selectedDate
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.Locale
 
-
 class EventEditActivity : AppCompatActivity() {
 
     private lateinit var eventNameET: EditText
-    private lateinit var eventDateTV: TextView
-    private lateinit var eventTimeTV: TextView
     private var datePickerDialog: DatePickerDialog? = null
     private lateinit var dateButton: Button
     private lateinit var timeButton: Button
     private var selectedDate: LocalDate = LocalDate.now()
     private var selectedTime: LocalTime = LocalTime.now()
-
-    private var hour: Int = 0
-    private var minute: Int = 0
-
-    private var time: LocalTime = LocalTime.now()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,9 +43,6 @@ class EventEditActivity : AppCompatActivity() {
         dateButton.text = formatDate(selectedDate)
         timeButton.text = formatTime(selectedTime)
         initDatePicker();
-
-      //  dateButton.text = getTodayDate()
-
     }
 
     private fun formatDate(date: LocalDate): String {
@@ -100,28 +85,6 @@ class EventEditActivity : AppCompatActivity() {
         return "JAN"
     }
 
-
-//    private fun initDatePicker() {
-//        val dateSetListener =
-//            OnDateSetListener { datePicker, year, month, day ->
-//                var month = month
-//                month += 1
-//                val date = makeDateString(day, month, year)
-//                dateButton.text = date
-//            }
-//
-//        val cal = Calendar.getInstance()
-//        val year = cal[Calendar.YEAR]
-//        val month = cal[Calendar.MONTH]
-//        val day = cal[Calendar.DAY_OF_MONTH]
-//
-//       val style: Int = AlertDialog.BUTTON_POSITIVE
-//
-//        datePickerDialog = DatePickerDialog(this, style, dateSetListener, year, month, day)
-//
-//
-//    }
-
     private fun initDatePicker() {
         val today = Calendar.getInstance()
         val year = today.get(Calendar.YEAR)
@@ -154,17 +117,6 @@ class EventEditActivity : AppCompatActivity() {
         timeButton = findViewById(R.id.timeButton)
     }
 
-//    fun saveEventAction(view: View) {
-//        val eventName = eventNameET.text.toString().trim()
-//        val eventTime = "todo"
-//        val eventDate = "todo"
-//        if (eventName.isNotEmpty()) {
-//            val newEvent = Event(eventName, eventDate, eventTime)
-//            Event.eventsList.add(newEvent)
-//        }
-//        finish()
-//    }
-
     fun saveEventAction(view: View) {
         val eventName = eventNameET.text.toString().trim()
 
@@ -182,23 +134,6 @@ class EventEditActivity : AppCompatActivity() {
     fun openDatePicker(view: View) {
         datePickerDialog?.show()
     }
-//    fun popTimePicker(view: View?) {
-//        val onTimeSetListener =
-//            OnTimeSetListener { timePicker, selectedHour, selectedMinute ->
-//                 hour = selectedHour
-//                 minute = selectedMinute
-//                timeButton.text =
-//                    java.lang.String.format(Locale.getDefault(), "%02d:%02d", hour, minute)
-//            }
-//
-//        val style: Int = AlertDialog.BUTTON_POSITIVE
-//
-//        val timePickerDialog =
-//            TimePickerDialog(this,  style, onTimeSetListener, hour, minute, true)
-//
-//        timePickerDialog.setTitle("Select Time")
-//        timePickerDialog.show()
-//    }
 
     fun popTimePicker(view: View) {
         val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hour, minute ->

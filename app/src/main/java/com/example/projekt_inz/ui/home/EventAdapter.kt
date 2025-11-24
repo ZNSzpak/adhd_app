@@ -9,10 +9,9 @@ import android.widget.TextView
 import com.example.projekt_inz.R
 import java.time.format.DateTimeFormatter
 
-
 class EventAdapter(
     context: Context,
-    private val events: List<Event>
+    events: List<Event>
 ) : ArrayAdapter<Event>(context,0, events) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {

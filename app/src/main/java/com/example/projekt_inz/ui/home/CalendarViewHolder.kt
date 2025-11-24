@@ -1,10 +1,10 @@
 package com.example.projekt_inz.ui.home
+
 import com.example.projekt_inz.R
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import java.time.LocalDate
-
 
 class CalendarViewHolder(itemView: View,
                          private val onItemListener: CalendarAdapter.OnItemListener,

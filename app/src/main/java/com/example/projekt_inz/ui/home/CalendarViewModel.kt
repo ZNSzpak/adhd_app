@@ -8,11 +8,9 @@ import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-
-class HomeViewModel : ViewModel() {
+class CalendarViewModel : ViewModel() {
 
     private val _selectedDate = MutableLiveData(LocalDate.now())
-    val selectedDate: LiveData<LocalDate> = _selectedDate
 
     private val _monthYearText = MutableLiveData<String>()
     val monthYearText: LiveData<String> = _monthYearText
@@ -30,11 +28,6 @@ class HomeViewModel : ViewModel() {
         _daysInMonth.value = daysInMonthArray(current)
     }
 
-    fun selectDate(date: LocalDate) {
-        _selectedDate.value = date
-        updateMonthView()
-    }
-
     fun previousMonth() {
         _selectedDate.value = _selectedDate.value?.minusMonths(1)
         updateMonthView()
@@ -45,12 +38,10 @@ class HomeViewModel : ViewModel() {
         updateMonthView()
     }
 
-
     fun monthYearFromDate(date: LocalDate): String {
         val formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault())
         return date.format(formatter)
     }
-
 
     fun daysInMonthArray(date: LocalDate): List<LocalDate?> {
         val daysInMonthArray = mutableListOf<LocalDate?>()
@@ -69,26 +60,4 @@ class HomeViewModel : ViewModel() {
         }
         return daysInMonthArray
     }
-
-//    fun daysInMonthArray(date: LocalDate): List<LocalDate?> {
-//        val daysInMonthArray = mutableListOf<LocalDate?>()
-//        val yearMonth = YearMonth.from(date)
-//        val daysInMonth = yearMonth.lengthOfMonth()
-//
-//        val firstOfMonth = date.withDayOfMonth(1)
-//        val dayOfWeek = (firstOfMonth.dayOfWeek.value + 6) % 7  // Monday = 0
-//
-//        for (i in 1..42) {
-//            if (i <= dayOfWeek || i > daysInMonth + dayOfWeek) {
-//                daysInMonthArray.add(null)
-//            } else {
-//                daysInMonthArray.add(
-//                    LocalDate.of(date.year, date.month, i - dayOfWeek)
-//                )
-//            }
-//        }
-//        return daysInMonthArray
-//    }
-//
-
 }

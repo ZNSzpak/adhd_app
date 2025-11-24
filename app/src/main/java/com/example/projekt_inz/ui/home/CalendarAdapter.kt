@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.projekt_inz.R
 import java.time.LocalDate
 
-
 class CalendarAdapter(
     private val days: List<LocalDate?>,
     private val onItemListener: OnItemListener
@@ -25,35 +24,6 @@ class CalendarAdapter(
         return CalendarViewHolder(view, onItemListener, days)
     }
 
-//    override fun onBindViewHolder( holder: CalendarViewHolder, position: Int) {
-//        val date = days[position]
-//        holder.dayOfMonth.text = date?.dayOfMonth?.toString() ?: ""
-//    }
-
-//    override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
-//        val date = days[position]
-//        if (date == null) holder.dayOfMonth.text = ""
-//        else {
-//            holder.dayOfMonth.text = date.dayOfMonth.toString()
-//
-//            //if (date == CalendarUtils.selectedDate) holder.parentView.setBackgroundColor(Color.LTGRAY)
-//            // nowy kod
-//            // Highlight today's date
-//            if (date == LocalDate.now()) {
-//               // holder.dayOfMonth.setTextColor(Color.BLUE)
-//                holder.parentView.setBackgroundColor(Color.DKGRAY)
-//            }
-//            // Highlight the selected date
-//            else if (date == CalendarUtils.selectedDate) {
-//              //  holder.dayOfMonth.setTextColor(Color.WHITE)
-//                holder.parentView.setBackgroundColor(Color.LTGRAY)
-//            } else {
-//                holder.dayOfMonth.setTextColor(Color.BLACK)
-//                holder.parentView.setBackgroundResource(0)
-//            }
-//        }
-//    }
-
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
         val date = days[position]
 
@@ -65,7 +35,6 @@ class CalendarAdapter(
 
         holder.dayOfMonth.text = date.dayOfMonth.toString()
 
-        // Highlight today's date
         when {
             date.isEqual(LocalDate.now()) -> {
                 holder.parentView.setBackgroundColor(Color.DKGRAY)
@@ -79,7 +48,6 @@ class CalendarAdapter(
             }
         }
     }
-
 
     override fun getItemCount(): Int {
         return days.size
