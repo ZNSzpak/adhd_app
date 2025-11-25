@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.projekt_inz.R
 
 class TaskAdapter (
-    private val tasks: MutableList<Task>,
+    private var tasks: List<Task>,
     private val onEdit: (Task, Int) -> Unit,
     private val onDelete: (Task, Int) -> Unit,
     private val onChecked: (Task, Int, Boolean) -> Unit
@@ -24,8 +24,11 @@ class TaskAdapter (
         holder.taskText.text = task.text
         holder.checkbox.isChecked = task.isDone
 
+        // Strike-through if done
+       holder.taskText.paint.isStrikeThruText = task.isDone
+
         holder.checkbox.setOnCheckedChangeListener { _, isChecked ->
-            task.isDone = isChecked
+            //task.isDone = isChecked
             onChecked(task, position, isChecked)
         }
 
@@ -40,18 +43,23 @@ class TaskAdapter (
 
     override fun getItemCount(): Int = tasks.size
 
-    fun addTask(task: Task) {
-        tasks.add(task)
-        notifyItemInserted(tasks.size - 1)
+    fun submitList(newTasks: List<Task>) {
+        tasks = newTasks
+        notifyDataSetChanged()
     }
 
-    fun removeTask(position: Int) {
-        tasks.removeAt(position)
-        notifyItemRemoved(position)
-    }
-
-    fun updateTask(position: Int, newText: Task) {
-        tasks[position].text = newText.toString()
-        notifyItemChanged(position)
-    }
+//    fun addTask(task: Task) {
+//        tasks.add(task)
+//        notifyItemInserted(tasks.size - 1)
+//    }
+//
+//    fun removeTask(position: Int) {
+//        tasks.removeAt(position)
+//        notifyItemRemoved(position)
+//    }
+//
+//    fun updateTask(position: Int, newText: Task) {
+//        tasks[position].text = newText.toString()
+//        notifyItemChanged(position)
+//    }
 }
