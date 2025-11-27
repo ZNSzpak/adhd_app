@@ -9,8 +9,25 @@ import com.example.projekt_inz.R
 
 class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    val checkbox: CheckBox = itemView.findViewById(R.id.checkbox)
-    val taskText: TextView = itemView.findViewById(R.id.taskText)
-    val editTask: ImageView = itemView.findViewById(R.id.editTask)
-    val deleteTask: ImageView = itemView.findViewById(R.id.deleteTask)
+    private val checkbox: CheckBox = itemView.findViewById(R.id.checkbox)
+    private val taskText: TextView = itemView.findViewById(R.id.taskText)
+    private val editTask: ImageView = itemView.findViewById(R.id.editTask)
+    private val deleteTask: ImageView = itemView.findViewById(R.id.deleteTask)
+
+    fun bind(
+        task: TaskEntity,
+        onEdit: (TaskEntity) -> Unit,
+        onDelete: (TaskEntity) -> Unit,
+        onChecked: (TaskEntity, Boolean) -> Unit
+    ) {
+        taskText.text = task.text
+        checkbox.isChecked = task.isDone
+
+        // actions
+        editTask.setOnClickListener { onEdit(task) }
+        deleteTask.setOnClickListener { onDelete(task) }
+        checkbox.setOnCheckedChangeListener { _, checked ->
+            onChecked(task, checked)
+        }
+    }
 }

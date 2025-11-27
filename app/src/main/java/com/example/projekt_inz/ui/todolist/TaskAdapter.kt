@@ -2,64 +2,33 @@ package com.example.projekt_inz.ui.todolist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projekt_inz.R
 
 class TaskAdapter (
-    private var tasks: List<Task>,
-    private val onEdit: (Task, Int) -> Unit,
-    private val onDelete: (Task, Int) -> Unit,
-    private val onChecked: (Task, Int, Boolean) -> Unit
-) : RecyclerView.Adapter<TaskViewHolder>() {
+    private val onEdit: (TaskEntity) -> Unit,
+    private val onDelete: (TaskEntity) -> Unit,
+    private val onChecked: (TaskEntity, Boolean) -> Unit
+) : ListAdapter<TaskEntity, TaskViewHolder>(DiffCallback) {
+
+    companion object DiffCallback : DiffUtil.ItemCallback<TaskEntity>() {
+        override fun areItemsTheSame(oldItem: TaskEntity, newItem: TaskEntity): Boolean =
+            oldItem.id == newItem.id
+
+        override fun areContentsTheSame(oldItem: TaskEntity, newItem: TaskEntity): Boolean =
+            oldItem == newItem
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.each_todo_item, parent, false)   // your XML filename
+            .inflate(R.layout.each_todo_item, parent, false)
         return TaskViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        val task = tasks[position]
-
-        holder.taskText.text = task.text
-        holder.checkbox.isChecked = task.isDone
-
-        // Strike-through if done
-       holder.taskText.paint.isStrikeThruText = task.isDone
-
-        holder.checkbox.setOnCheckedChangeListener { _, isChecked ->
-            //task.isDone = isChecked
-            onChecked(task, position, isChecked)
-        }
-
-        holder.editTask.setOnClickListener {
-            onEdit(task, position)
-        }
-
-        holder.deleteTask.setOnClickListener {
-            onDelete(task, position)
-        }
+        val task = getItem(position)
+        holder.bind(task, onEdit, onDelete, onChecked)
     }
-
-    override fun getItemCount(): Int = tasks.size
-
-    fun submitList(newTasks: List<Task>) {
-        tasks = newTasks
-        notifyDataSetChanged()
-    }
-
-//    fun addTask(task: Task) {
-//        tasks.add(task)
-//        notifyItemInserted(tasks.size - 1)
-//    }
-//
-//    fun removeTask(position: Int) {
-//        tasks.removeAt(position)
-//        notifyItemRemoved(position)
-//    }
-//
-//    fun updateTask(position: Int, newText: Task) {
-//        tasks[position].text = newText.toString()
-//        notifyItemChanged(position)
-//    }
 }
