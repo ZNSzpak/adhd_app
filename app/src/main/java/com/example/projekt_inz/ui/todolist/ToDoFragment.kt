@@ -19,6 +19,7 @@ class ToDoFragment : Fragment() {
     private lateinit var addButton: FloatingActionButton
 
     private lateinit var taskAdapter: TaskAdapter
+    //private val taskListData = mutableListOf<Task>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,10 +30,13 @@ class ToDoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val dao = TaskDatabase.getDatabase(requireContext()).taskDao()
+        val repository = TaskRepository(dao)
+        val factory = ToDoViewModelFactory(repository)
 
         findViews(view)
 
-        viewModel = ViewModelProvider(this)[ToDoViewModel::class.java]
+        viewModel = ViewModelProvider(this, factory)[ToDoViewModel::class.java]
 
         setupRecyclerView()
         observeViewModel()
@@ -46,11 +50,13 @@ class ToDoFragment : Fragment() {
 
     private fun setupRecyclerView() {
         taskAdapter = TaskAdapter(
-            //taskListData,
-            emptyList(),
-            onEdit = { task, pos -> editTask(task, pos) },
-            onDelete = { _, pos -> viewModel.deleteTask(pos) },
-            onChecked = { _, pos, checked -> viewModel.toggleTask(pos, checked) }
+            onEdit = { task ->
+                EditTaskDialogFragment(task.text) { newText ->
+                    viewModel.updateTask(task, newText)
+                }.show(parentFragmentManager, "EditTask")
+            },
+            onDelete = { task -> viewModel.deleteTask(task) },
+            onChecked = { task, checked -> viewModel.toggleTask(task, checked) }
         )
 
         taskList.layoutManager = LinearLayoutManager(requireContext())
@@ -59,21 +65,27 @@ class ToDoFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.tasks.observe(viewLifecycleOwner) { tasks ->
-            taskAdapter.submitList(tasks.toList()) // toList() to trigger diff
+            taskAdapter.submitList(tasks) //
         }
     }
 
     private fun setupAddButton() {
         addButton.setOnClickListener {
             AddTaskDialogFragment { newTaskText ->
-                viewModel.addTask(Task(newTaskText))
+                viewModel.addTask(newTaskText)
             }.show(parentFragmentManager, "AddTaskDialog")
         }
     }
 
-    private fun editTask(task: Task, position: Int) {
-        EditTaskDialogFragment(task.text) { newText ->
-            viewModel.updateTask(position, task.copy(text = newText))
-        }.show(parentFragmentManager, "EditTaskDialog")
-    }
+//    private fun deleteTask(position: Int) {
+//        taskAdapter.removeTask(position)
+//    }
+//
+//    private fun toggleTask(task: Task, position: Int, checked: Boolean) {
+//        val updatedTask = task.copy(isDone = checked)
+//        taskAdapter.updateTask(position, updatedTask)
+//
+//    }
+
+
 }
