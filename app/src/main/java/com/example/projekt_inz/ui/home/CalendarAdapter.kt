@@ -37,10 +37,10 @@ class CalendarAdapter(
 
         when {
             date.isEqual(LocalDate.now()) -> {
-                holder.parentView.setBackgroundColor(Color.DKGRAY)
+                holder.parentView.setBackgroundColor(Color.LTGRAY)
             }
             date.isEqual(CalendarUtils.selectedDate) -> {
-                holder.parentView.setBackgroundColor(Color.DKGRAY)
+                holder.parentView.setBackgroundColor(Color.YELLOW)
             }
             else -> {
                 holder.dayOfMonth.setTextColor(Color.BLACK)

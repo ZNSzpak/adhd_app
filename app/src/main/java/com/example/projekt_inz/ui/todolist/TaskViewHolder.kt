@@ -20,6 +20,7 @@ class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         onDelete: (TaskEntity) -> Unit,
         onChecked: (TaskEntity, Boolean) -> Unit
     ) {
+        checkbox.setOnCheckedChangeListener(null)
         taskText.text = task.text
         checkbox.isChecked = task.isDone
 

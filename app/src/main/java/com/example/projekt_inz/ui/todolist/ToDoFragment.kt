@@ -19,7 +19,6 @@ class ToDoFragment : Fragment() {
     private lateinit var addButton: FloatingActionButton
 
     private lateinit var taskAdapter: TaskAdapter
-    //private val taskListData = mutableListOf<Task>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,16 +75,4 @@ class ToDoFragment : Fragment() {
             }.show(parentFragmentManager, "AddTaskDialog")
         }
     }
-
-//    private fun deleteTask(position: Int) {
-//        taskAdapter.removeTask(position)
-//    }
-//
-//    private fun toggleTask(task: Task, position: Int, checked: Boolean) {
-//        val updatedTask = task.copy(isDone = checked)
-//        taskAdapter.updateTask(position, updatedTask)
-//
-//    }
-
-
 }
