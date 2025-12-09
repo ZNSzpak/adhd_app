@@ -5,15 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projekt_inz.R
 import com.example.projekt_inz.ui.routines.routine_list.RoutineTaskDatabase
-import com.example.projekt_inz.ui.todolist.ToDoViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class RoutinesFragment : Fragment() {

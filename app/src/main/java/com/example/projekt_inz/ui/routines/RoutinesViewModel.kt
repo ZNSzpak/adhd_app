@@ -1,17 +1,11 @@
 package com.example.projekt_inz.ui.routines
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.projekt_inz.ui.todolist.TaskEntity
-import com.example.projekt_inz.ui.todolist.TaskRepository
 import kotlinx.coroutines.launch
 
 class RoutinesViewModel(private val repository: RoutinesRepository) : ViewModel() {
-
-   // private val dao = RoutinesDatabase.getDatabase(application).todoListDao()
-
 
     val allLists: LiveData<List<ButtonListEntry>> = repository.allLists
 

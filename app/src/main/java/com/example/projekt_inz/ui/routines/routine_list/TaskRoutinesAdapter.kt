@@ -11,9 +11,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projekt_inz.R
 
-class TaskRoutinesAdapter ( private val onEdit: (TaskEntityRoutines) -> Unit,
-private val onDelete: (TaskEntityRoutines) -> Unit,
-private val onChecked: (TaskEntityRoutines, Boolean) -> Unit
+class TaskRoutinesAdapter (
+    private val onEdit: (TaskEntityRoutines) -> Unit,
+    private val onDelete: (TaskEntityRoutines) -> Unit,
+    private val onChecked: (TaskEntityRoutines, Boolean) -> Unit
 ) : ListAdapter<TaskEntityRoutines, TaskRoutinesAdapter.TaskViewHolder>(TaskDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
@@ -33,13 +34,11 @@ private val onChecked: (TaskEntityRoutines, Boolean) -> Unit
         private val deleteButton: ImageView = itemView.findViewById(R.id.deleteTask)
 
         fun bind(task: TaskEntityRoutines) {
-            // --- IMPORTANT: Remove listener before updating isChecked ---
             checkbox.setOnCheckedChangeListener(null)
             checkbox.isChecked = task.isDone
 
             taskText.text = task.text
 
-            // Add listener AFTER setting isChecked
             checkbox.setOnCheckedChangeListener { _, isChecked ->
                 onChecked(task, isChecked)
             }
