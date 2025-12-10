@@ -26,42 +26,15 @@ class NotesAdapter(
         val note = getItem(position)
 
         holder.noteText.text = note.text
-
-        // FULL ITEM CLICK (→ show full note)
         holder.itemView.setOnClickListener { onClick(note) }
-
-        // OPTIONAL: if your item_note.xml has edit/delete buttons
-//        holder.editButton?.setOnClickListener { onEditClick(note) }
-//        holder.deleteButton?.setOnClickListener { onDeleteClick(note) }
+        holder.editButton.setOnClickListener { onEditClick(note) }
+        holder.deleteButton.setOnClickListener { onDeleteClick(note) }
     }
 
     inner class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val noteText: TextView = itemView.findViewById(R.id.item_noteText)
-//        val editButton: ImageView = itemView.findViewById(R.id.editB)
-//        val deleteButton: ImageView = itemView.findViewById(R.id.deleteB)
-
-//        init {
-//            // CLICK on entire item
-//            itemView.setOnClickListener {
-//                val pos = absoluteAdapterPosition
-//                if (pos != RecyclerView.NO_POSITION) {
-//                    onClick(getItem(pos))
-//                }
-//            }
-//        }
-//
-//        fun bind(entry: NoteEntity) {
-//
-//            noteText.text = entry.text
-//
-////            editButton.setOnClickListener {
-////                onEdit(entry)
-////            }
-////
-////            deleteButton.setOnClickListener {
-////                onDelete(entry)
-////            }
-//        }
+        val editButton: ImageView = itemView.findViewById(R.id.editNB)
+        val deleteButton: ImageView = itemView.findViewById(R.id.deleteNB)
     }
 }
 

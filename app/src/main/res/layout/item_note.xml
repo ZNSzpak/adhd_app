@@ -2,17 +2,56 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="12dp"
     android:padding="12dp"
     android:elevation="4dp">
 
-    <TextView
-        android:id="@+id/item_noteText"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="2"
-        android:ellipsize="end"
-        android:textSize="16sp"
-        android:padding="12dp"/>
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/item_noteText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/editNB"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textSize="16sp"
+            android:padding="12dp"/>
+
+        <ImageView
+            android:id="@+id/editNB"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:padding="4dp"
+            android:src="@drawable/baseline_edit_24"
+            android:contentDescription="Edit task"
+            app:layout_constraintEnd_toStartOf="@id/deleteNB"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="12dp" />
+
+        <!-- Delete Button -->
+        <ImageView
+            android:id="@+id/deleteNB"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:padding="4dp"
+            android:src="@drawable/baseline_delete_24"
+            android:contentDescription="Delete task"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

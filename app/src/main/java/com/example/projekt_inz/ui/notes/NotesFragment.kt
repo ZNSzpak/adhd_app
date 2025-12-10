@@ -57,9 +57,9 @@ class NotesFragment : Fragment() {
                 .show(childFragmentManager, "ShowNoteDialog")
             },
             onEditClick = { item ->
-                EditButtonDialogFragment(item.text) { newText ->
+                EditNoteDialogFragment(item.text) { newText ->
                     viewModel.updateNote(item, newText)
-                }.show(parentFragmentManager, "EditListDialog")
+                }.show(parentFragmentManager, "EditNoteDialog")
             },
             onDeleteClick = { item ->
                 viewModel.deleteNote(item)

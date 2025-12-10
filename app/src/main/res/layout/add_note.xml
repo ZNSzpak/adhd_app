@@ -50,8 +50,11 @@
                     android:background="@android:color/transparent"
                     android:dropDownHeight="wrap_content"
                     android:dropDownVerticalOffset="2dp"
-                    android:inputType="text"
+                    android:inputType="textMultiLine"
                     android:padding="12dp"
+                    android:gravity="top|start"
+                    android:imeOptions="flagNoEnterAction"
+                    android:scrollHorizontally="false"
                     android:textColor="@android:color/black" />
             </com.google.android.material.textfield.TextInputLayout>
         </com.google.android.material.card.MaterialCardView>
