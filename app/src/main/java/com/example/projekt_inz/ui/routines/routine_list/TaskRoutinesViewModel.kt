@@ -1,5 +1,6 @@
 package com.example.projekt_inz.ui.routines.routine_list
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,9 +10,25 @@ class TaskRoutinesViewModel (private val repository: TaskRoutinesRepository, pri
 
     val tasks: LiveData<List<TaskEntityRoutines>> = repository.getTasksForList(listId)
 
-    fun addTask(task: TaskEntityRoutines) {
+//    fun addTask(newText: String) {
+//        viewModelScope.launch {
+//            val task = TaskEntityRoutines(
+//                listId = listId,
+//                text = newText
+//            )
+//            repository.addTask(task)
+//        }
+//        Log.d("ADD_TASK", "Adding task to listId = $listId")
+//    }
+
+    fun addTask(newText: String) {
         viewModelScope.launch {
-            repository.addTask(task)
+            repository.addTask(
+                TaskEntityRoutines(
+                    listId = listId,
+                    text = newText
+                )
+            )
         }
     }
 

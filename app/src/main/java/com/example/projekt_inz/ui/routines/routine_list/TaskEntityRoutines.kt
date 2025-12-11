@@ -6,7 +6,7 @@ import androidx.room.ForeignKey
 import com.example.projekt_inz.ui.routines.ButtonListEntry
 
 @Entity(
-    tableName = "tasks",
+    tableName = "routine_tasks",
     foreignKeys = [ForeignKey(
         entity = ButtonListEntry::class,
         parentColumns = ["id"],

@@ -11,7 +11,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class AddTaskRFragment (
     private val listId: Long,                       // ID of the routine/list
-    private val onTaskAdded: (TaskEntityRoutines) -> Unit
+    private val onTaskAdded: (String) -> Unit
 ) : DialogFragment() {
 
     private lateinit var inputEt: EditText
@@ -51,8 +51,8 @@ class AddTaskRFragment (
         addButton.setOnClickListener {
             val text = inputEt.text.toString().trim()
             if (text.isNotEmpty()) {
-                val newTask = TaskEntityRoutines(listId = listId, text = text)
-                onTaskAdded(newTask)
+               // val newTask = TaskEntityRoutines(listId = listId, text = text)
+                onTaskAdded(text)
                 dismiss()
             } else {
                 inputEt.error = "Enter a task"

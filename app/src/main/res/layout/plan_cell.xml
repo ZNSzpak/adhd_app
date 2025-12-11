@@ -1,17 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/event_block_background"
-    android:padding="6dp">
+    app:cardCornerRadius="8dp"
+    android:elevation="4dp"
+    android:layout_margin="4dp"
+    android:backgroundTint="#CDE7FF">
 
-    <TextView
-        android:id="@+id/eventTitle"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Lesson name"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        android:textSize="14sp" />
+        android:orientation="vertical"
+        android:padding="8dp">
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/blockTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Maths"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/blockTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="08:00 - 11:00"
+            android:textSize="14sp"/>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

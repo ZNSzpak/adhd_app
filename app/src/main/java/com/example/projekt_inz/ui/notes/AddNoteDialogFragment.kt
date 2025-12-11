@@ -56,7 +56,7 @@ class AddNoteDialogFragment(
                 onNoteAdded(newNote)
                 dismiss()
             } else {
-                textNote.error = "Zapisz notatke"
+                textNote.error = "Zapisz blok"
             }
         }
     }

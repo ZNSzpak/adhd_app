@@ -9,7 +9,6 @@ import com.example.projekt_inz.R
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.projekt_inz.ui.routines.EditButtonDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class NotesFragment : Fragment() {

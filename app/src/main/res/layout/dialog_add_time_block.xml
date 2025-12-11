@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp"
+    app:cardCornerRadius="16dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+    <!-- Close Button -->
+    <ImageView
+        android:id="@+id/closeButtonAdd"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:contentDescription="Zamknij okno"
+        android:src="@drawable/baseline_close_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/closeButtonAdd"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <EditText
+            android:id="@+id/editBlockName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nazwa"
+            android:inputType="text"/>
+
+        <Spinner
+            android:id="@+id/spinnerDay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"/>
+
+        <TextView
+            android:text="Czas rozpoczęcia"
+            android:layout_marginTop="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TimePicker
+            android:id="@+id/startTimePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner" />
+
+        <TextView
+            android:text="Czas zakończenia"
+            android:layout_marginTop="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TimePicker
+            android:id="@+id/endTimePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner"/>
+
+        <Button
+            android:id="@+id/btnAddBlock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Zapisz"
+            android:layout_marginTop="16dp"/>
+
+    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

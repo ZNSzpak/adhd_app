@@ -80,7 +80,7 @@ class TodoListFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.tasks.observe(viewLifecycleOwner) { tasks ->
-            taskAdapter.submitList(tasks) //
+            taskAdapter.submitList(tasks.toList()) //
         }
     }
 
@@ -88,9 +88,9 @@ class TodoListFragment : Fragment() {
         addButton.setOnClickListener {
             AddTaskRFragment(listId) { newTask ->
 
-                    viewModel.addTask(newTask) // pass the entity, not toString()
+                    viewModel.addTask(newTask)
 
-            }.show(parentFragmentManager, "AddToListDialog")
+            }.show(parentFragmentManager, "AddTaskDialog")
         }
     }
 }
