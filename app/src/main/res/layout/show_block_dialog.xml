@@ -57,7 +57,7 @@
                     android:padding="8dp">
 
                     <TextView
-                        android:id="@+id/blockTitle"
+                        android:id="@+id/blockTitleShow"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Maths"
@@ -65,7 +65,7 @@
                         android:textSize="16sp"/>
 
                     <TextView
-                        android:id="@+id/blockTime"
+                        android:id="@+id/blockTimeShow"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="08:00 - 11:00"
@@ -75,20 +75,20 @@
 
             </ScrollView>
                     <ImageView
-                        android:id="@+id/editTask"
+                        android:id="@+id/editBlock"
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:padding="4dp"
                         android:src="@drawable/baseline_edit_24"
                         android:contentDescription="Edit block"
                         app:layout_constraintBottom_toBottomOf="@id/contentLayout"
-                        app:layout_constraintEnd_toStartOf="@id/deleteTask"
+                        app:layout_constraintEnd_toStartOf="@id/deleteBlock"
                         android:layout_marginEnd="8dp"
                         android:layout_marginTop="8dp"/>
 
                     <!-- Delete Button -->
                     <ImageView
-                        android:id="@+id/deleteTask"
+                        android:id="@+id/deleteBlock"
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:padding="4dp"

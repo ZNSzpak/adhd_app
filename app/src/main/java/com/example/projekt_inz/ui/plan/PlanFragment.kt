@@ -74,7 +74,6 @@ class PlanFragment : Fragment() {
     }
 
     private fun setupTable() {
-        // Optional: dynamically generate rows 07:00–20:00 if you don't want to hardcode in XML
 
         for (hour in 7..20) {
             val row = TableRow(requireContext())
@@ -99,7 +98,6 @@ class PlanFragment : Fragment() {
         }
     }
 
-
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -123,21 +121,16 @@ class PlanFragment : Fragment() {
         table = requireView().findViewById(R.id.timetableTable)
     }
 
-//    private val onBlockClick: (PlanEntity) -> Unit = { block ->
-//        ShowBlockDialogFragment(block,
-//            onEdit = onBlockEdit,
-//            onDelete = onBlockDelete
-//        ).show(parentFragmentManager, "ShowBlockDialog")
-//    }
-
-    private val onBlockEdit: (PlanEntity) -> Unit = { block ->
-        EditBlockDialogFragment(block) { updated ->
-            viewModel.updateBlock(updated)
-        }.show(parentFragmentManager, "EditBlockDialog")
-    }
-
-    private val onBlockDelete: (PlanEntity) -> Unit = { block ->
-        viewModel.deleteBlock(block)
+    private val onBlockClick: (PlanEntity) -> Unit = { block ->
+        ShowBlockDialogFragment.newInstance(
+            id = block.id,
+            name = block.name,
+            dayOfWeek = block.dayOfWeek,
+            startMinute = block.startMinute,
+            endMinute = block.endMinute
+        ) { idToDelete ->
+            viewModel.deleteBlockById(idToDelete)
+        }.show(childFragmentManager, "ShowBlockDialog")
     }
 
     private fun drawBlocks(blocks: List<PlanEntity>) {
@@ -145,13 +138,11 @@ class PlanFragment : Fragment() {
         val table = requireView().findViewById<TableLayout>(R.id.timetableTable)
 
         table.post {
-            // Clear old blocks
             container.removeAllViews()
 
             val hourHeightPx = viewModel.hourHeight
             val firstHour = 7
 
-            // Get the ACTUAL top position of the 07:00 row:
             val row07 = table.getChildAt(1) as TableRow
             val yStart07 = row07.top
 
@@ -185,6 +176,10 @@ class PlanFragment : Fragment() {
                 params.leftMargin = left
                 params.topMargin = topPx.toInt()
                 blockView.layoutParams = params
+
+                blockView.setOnClickListener {
+                    onBlockClick(block)
+                }
 
                 container.addView(blockView)
             }

@@ -10,6 +10,9 @@ interface PlanDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertBlock(block: PlanEntity)
 
+    @Query("DELETE FROM time_blocks WHERE id = :id")
+    suspend fun deleteById(id: Int)
+
     @Update
     suspend fun updateBlock(block: PlanEntity)
 

@@ -6,6 +6,10 @@ class PlanRepository (private val dao: PlanDao) {
 
     val allBlocks: Flow<List<PlanEntity>> = dao.getAllBlocks()
 
+    suspend fun deleteBlockById(id: Int) {
+        dao.deleteById(id)
+    }
+
     suspend fun insert(block: PlanEntity) =
         dao.insertBlock(block)
 

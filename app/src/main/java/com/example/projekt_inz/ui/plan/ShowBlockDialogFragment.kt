@@ -20,7 +20,6 @@ class ShowBlockDialogFragment : DialogFragment() {
         private const val ARG_DAY = "arg_day"
         private const val ARG_START = "arg_start"
         private const val ARG_END = "arg_end"
-        private const val ARG_DESC = "arg_desc"
 
         fun newInstance(
             id: Int,
@@ -28,6 +27,7 @@ class ShowBlockDialogFragment : DialogFragment() {
             dayOfWeek: Int,
             startMinute: Int,
             endMinute: Int,
+            onDelete: ((Int) -> Unit)? = null
         ): ShowBlockDialogFragment {
 
             val fragment = ShowBlockDialogFragment()
@@ -39,11 +39,13 @@ class ShowBlockDialogFragment : DialogFragment() {
                 putInt(ARG_START, startMinute)
                 putInt(ARG_END, endMinute)
             }
-
             fragment.arguments = args
+            fragment.onDeleteBlock = onDelete
             return fragment
         }
     }
+
+    private var onDeleteBlock: ((Int) -> Unit)? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val inflater = requireActivity().layoutInflater
@@ -65,17 +67,22 @@ class ShowBlockDialogFragment : DialogFragment() {
         )
 
         // find views
-        val titleView = view.findViewById<TextView>(R.id.blockTitle)
-        val timeView = view.findViewById<TextView>(R.id.blockTime)
+        val titleView = view.findViewById<TextView>(R.id.blockTitleShow)
+        val timeView = view.findViewById<TextView>(R.id.blockTimeShow)
         val closeBtn = view.findViewById<ImageView>(R.id.closeBlock)
-        val editBtn = view.findViewById<ImageView>(R.id.editTask)
-        val deleteBtn = view.findViewById<ImageView>(R.id.deleteTask)
+        val editBtn = view.findViewById<ImageView>(R.id.editBlock)
+        val deleteBtn = view.findViewById<ImageView>(R.id.deleteBlock)
 
         // fill UI
         titleView.text = block.name
         timeView.text = block.formatTimeRange()
 
         closeBtn.setOnClickListener { dismiss() }
+
+        deleteBtn.setOnClickListener {
+            onDeleteBlock?.invoke(block.id) // notify caller
+            dismiss()
+        }
 
 //        editBtn.setOnClickListener {
 //            EditBlockDialogFragment(block) { updatedBlock ->

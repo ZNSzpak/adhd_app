@@ -31,6 +31,12 @@ class PlanViewModel(
         }
     }
 
+    fun deleteBlockById(id: Int) {
+        viewModelScope.launch {
+            repository.deleteBlockById(id)
+        }
+    }
+
     fun clearAll() {
         viewModelScope.launch {
             repository.clearAll()
