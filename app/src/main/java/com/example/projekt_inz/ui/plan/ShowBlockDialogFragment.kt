@@ -2,17 +2,17 @@ package com.example.projekt_inz.ui.plan
 
 import android.app.Dialog
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.example.projekt_inz.MainActivity
 import com.example.projekt_inz.R
 
 class ShowBlockDialogFragment : DialogFragment() {
+
+    private var onDeleteBlock: ((Int) -> Unit)? = null
+    private var onEditBlock: ((PlanEntity) -> Unit)? = null
 
     companion object {
         private const val ARG_ID = "arg_id"
@@ -27,6 +27,7 @@ class ShowBlockDialogFragment : DialogFragment() {
             dayOfWeek: Int,
             startMinute: Int,
             endMinute: Int,
+            onEdit: ((PlanEntity) -> Unit)? = null,
             onDelete: ((Int) -> Unit)? = null
         ): ShowBlockDialogFragment {
 
@@ -41,11 +42,12 @@ class ShowBlockDialogFragment : DialogFragment() {
             }
             fragment.arguments = args
             fragment.onDeleteBlock = onDelete
+            fragment.onEditBlock = onEdit
             return fragment
         }
     }
 
-    private var onDeleteBlock: ((Int) -> Unit)? = null
+
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val inflater = requireActivity().layoutInflater
@@ -73,7 +75,6 @@ class ShowBlockDialogFragment : DialogFragment() {
         val editBtn = view.findViewById<ImageView>(R.id.editBlock)
         val deleteBtn = view.findViewById<ImageView>(R.id.deleteBlock)
 
-        // fill UI
         titleView.text = block.name
         timeView.text = block.formatTimeRange()
 
@@ -84,13 +85,10 @@ class ShowBlockDialogFragment : DialogFragment() {
             dismiss()
         }
 
-//        editBtn.setOnClickListener {
-//            EditBlockDialogFragment(block) { updatedBlock ->
-//                (requireActivity() as MainActivity).planViewModel.updateBlock(updatedBlock)
-//            }.show(parentFragmentManager, "EditBlockDialog")
-//            dismiss()
-//        }
-
+        editBtn.setOnClickListener {
+            onEditBlock?.invoke(block)
+            dismiss()
+        }
 
         return AlertDialog.Builder(requireContext())
             .setView(view)

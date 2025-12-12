@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 
 class PlanFragment : Fragment() {
 
-    private lateinit var viewModel: PlanViewModel
+    lateinit var viewModel: PlanViewModel
     private lateinit var addButton: FloatingActionButton
     private lateinit var table: TableLayout
 
@@ -121,16 +121,34 @@ class PlanFragment : Fragment() {
         table = requireView().findViewById(R.id.timetableTable)
     }
 
+//    private val onBlockClick: (PlanEntity) -> Unit = { block ->
+//        ShowBlockDialogFragment.newInstance(
+//            id = block.id,
+//            name = block.name,
+//            dayOfWeek = block.dayOfWeek,
+//            startMinute = block.startMinute,
+//            endMinute = block.endMinute
+//        ) { idToDelete ->
+//            viewModel.deleteBlockById(idToDelete)
+//        }.show(childFragmentManager, "ShowBlockDialog")
+//    }
+
     private val onBlockClick: (PlanEntity) -> Unit = { block ->
         ShowBlockDialogFragment.newInstance(
             id = block.id,
             name = block.name,
             dayOfWeek = block.dayOfWeek,
             startMinute = block.startMinute,
-            endMinute = block.endMinute
-        ) { idToDelete ->
-            viewModel.deleteBlockById(idToDelete)
-        }.show(childFragmentManager, "ShowBlockDialog")
+            endMinute = block.endMinute,
+            onEdit = { updatedBlock ->
+                EditBlockDialogFragment(updatedBlock) { updated ->
+                    viewModel.updateBlock(updated) // <-- this updates DB and triggers UI refresh
+                }.show(childFragmentManager, "EditBlockDialog")// use ViewModel directly
+            },
+            onDelete = { idToDelete ->
+                viewModel.deleteBlockById(idToDelete)
+            }
+        ).show(childFragmentManager, "ShowBlockDialog")
     }
 
     private fun drawBlocks(blocks: List<PlanEntity>) {
