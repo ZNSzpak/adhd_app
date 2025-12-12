@@ -7,6 +7,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.TableLayout
 import android.widget.TableRow
@@ -46,6 +47,28 @@ class PlanFragment : Fragment() {
         viewModel = ViewModelProvider(this, factory)[PlanViewModel::class.java]
 
         setupTable()
+
+        table.viewTreeObserver.addOnGlobalLayoutListener(
+            object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+
+                    table.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                    // Row index 1 = row for 07:00 (row 0 = header)
+                    val row07 = table.getChildAt(1) as TableRow
+
+                    row07.measure(
+                        View.MeasureSpec.UNSPECIFIED,
+                        View.MeasureSpec.UNSPECIFIED
+                    )
+
+                    val hourHeight = row07.measuredHeight
+                    viewModel.hourHeight = hourHeight
+                }
+            }
+        )
+
+
         observeViewModel()
         setupAddButton()
     }
@@ -81,7 +104,6 @@ class PlanFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.blocks.collect { blocks ->
-                    Log.d("PLAN_DEBUG", "Blocks emitted: $blocks")
                     drawBlocks(blocks)
                 }
             }
@@ -126,20 +148,32 @@ class PlanFragment : Fragment() {
             // Clear old blocks
             container.removeAllViews()
 
-            val firstRow = table.getChildAt(1) as TableRow
-            val hourHeightPx = firstRow.height
+            val hourHeightPx = viewModel.hourHeight
             val firstHour = 7
 
+            // Get the ACTUAL top position of the 07:00 row:
+            val row07 = table.getChildAt(1) as TableRow
+            val yStart07 = row07.top
+
+
+            val offsetY = table.y - container.y
+
             blocks.forEach { block ->
+
                 val startOffsetMinutes = block.startMinute - firstHour * 60
                 val durationMinutes = block.endMinute - block.startMinute
 
-                val topPx = (startOffsetMinutes * hourHeightPx / 60f).toInt()
-                val heightPx = (durationMinutes * hourHeightPx / 60f).toInt()
+                val topPx =
+                    offsetY +
+                            yStart07 +
+                            ((startOffsetMinutes / 60f) * hourHeightPx).toInt()
 
-                val dayColumnIndex = block.dayOfWeek // 0=Mon
-                val columnWidth = table.width / 6 // 6 columns including time
-                val left = columnWidth * (dayColumnIndex + 1) // +1 because first column is time
+                val heightPx =
+                    ((durationMinutes / 60f) * hourHeightPx).toInt()
+
+                val dayIndex = block.dayOfWeek
+                val columnWidth = table.width / 6
+                val left = columnWidth * (dayIndex + 1)
 
                 val blockView = LayoutInflater.from(requireContext())
                     .inflate(R.layout.plan_cell, container, false)
@@ -149,70 +183,13 @@ class PlanFragment : Fragment() {
 
                 val params = FrameLayout.LayoutParams(columnWidth, heightPx)
                 params.leftMargin = left
-                params.topMargin = topPx
+                params.topMargin = topPx.toInt()
                 blockView.layoutParams = params
-
-                // --- CLICK TO OPEN SHOW DIALOG ---
-                blockView.setOnClickListener {
-
-//                    val dialog = ShowBlockDialogFragment.newInstance(block)
-//
-//                    dialog.onEditClick = { updated ->
-//                        viewModel.updateBlock(updated)
-//                    }
-//
-//                    dialog.onDeleteClick = {
-//                        viewModel.deleteBlock(block)
-//                    }
-
-                   // dialog.show(childFragmentManager, "ShowBlockDialog")
-                }
 
                 container.addView(blockView)
             }
         }
     }
-//    private fun placeBlock(block: PlanEntity) {
-//        val table = requireView().findViewById<TableLayout>(R.id.timetableTable)
-//        val container = requireView().findViewById<FrameLayout>(R.id.blockContainer)
-//        val firstRow = table.getChildAt(1) as TableRow
-//        val hourHeightPx = firstRow.height
-//        val firstHour = 7
-//        val startOffsetMinutes = block.startMinute - firstHour * 60
-//        val durationMinutes = block.endMinute - block.startMinute
-//
-//        val topPx = (startOffsetMinutes * hourHeightPx / 60f).toInt()
-//        val heightPx = (durationMinutes * hourHeightPx / 60f).toInt()
-//
-//
-//        val dayColumnIndex = block.dayOfWeek // 0=Mon
-//
-//        // Total minutes from 07:00
-//
-//        val endOffsetMinutes = block.endMinute - firstHour * 60
-//
-//
-//        // Calculate left and width based on table
-//        val columnWidth = table.width / 6 // 6 columns including time
-//        val left = columnWidth * (dayColumnIndex + 1) // +1 because first column is time
-//
-//        val blockView = LayoutInflater.from(requireContext())
-//            .inflate(R.layout.plan_cell, container, false)
-//
-//        val title = blockView.findViewById<TextView>(R.id.blockTitle)
-//        val time = blockView.findViewById<TextView>(R.id.blockTime)
-//
-//        title.text = block.name
-//        time.text = block.formatTimeRange()
-//
-//        val params = FrameLayout.LayoutParams(columnWidth, heightPx)
-//        params.leftMargin = left
-//        params.topMargin = topPx
-//
-//        blockView.layoutParams = params
-//        container.addView(blockView)
-//    }
-
 
     private fun dpToPx(dp: Float): Int =
         TypedValue.applyDimension(
