@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:padding="10dp"
     android:background="@android:color/white"
-    tools:context=".ui.home.WeekViewActivity">
+    tools:context=".ui.calendar.week_view.WeekViewFragment">
 
 
         <!-- Month/Year title -->

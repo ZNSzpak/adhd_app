@@ -1,4 +1,4 @@
-package com.example.projekt_inz.ui.home
+package com.example.projekt_inz.ui.calendar
 
 import com.example.projekt_inz.R
 import android.view.View

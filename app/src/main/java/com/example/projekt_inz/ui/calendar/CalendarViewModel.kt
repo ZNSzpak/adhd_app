@@ -1,4 +1,4 @@
-package com.example.projekt_inz.ui.home
+package com.example.projekt_inz.ui.calendar
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

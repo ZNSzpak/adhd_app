@@ -1,4 +1,4 @@
-package com.example.projekt_inz.ui.home
+package com.example.projekt_inz.ui.calendar
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -15,7 +15,7 @@ class CalendarAdapter(
     RecyclerView.Adapter<CalendarViewHolder>() {
     override fun onCreateViewHolder( parent: ViewGroup, viewType: Int): CalendarViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view: View = inflater.inflate(R.layout.calendar_cell, parent, false)
+        val view: View = inflater.inflate(R.layout.calendar_cell_week, parent, false)
         val layoutParams = view.layoutParams
         if (days.size > 15)  //month view
             layoutParams.height = (parent.height * 0.166666666).toInt()

@@ -1,4 +1,4 @@
-package com.example.projekt_inz.ui.home
+package com.example.projekt_inz.ui.calendar.week_view
 
 import java.time.LocalDate
 import java.time.LocalTime

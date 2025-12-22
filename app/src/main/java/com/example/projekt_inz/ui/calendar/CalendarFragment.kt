@@ -1,4 +1,4 @@
-package com.example.projekt_inz.ui.home
+package com.example.projekt_inz.ui.calendar
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projekt_inz.R
+import com.example.projekt_inz.ui.calendar.week_view.WeekViewFragment
 import java.time.LocalDate
 
 class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener {
@@ -24,7 +25,7 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_home, container, false)
+        val view = inflater.inflate(R.layout.fragment_calendar, container, false)
         monthYearText = view.findViewById(R.id.monthYearTV)
         calendarRecyclerView = view.findViewById(R.id.calendarRecyclerView)
 
@@ -65,7 +66,7 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener {
     }
 
     private fun weeklyAction() {
-        val intent = Intent(context, WeekViewActivity::class.java)
+        val intent = Intent(context, WeekViewFragment::class.java)
         intent.putExtra("selectedDate", CalendarUtils.selectedDate.toString())
         startActivity(intent)
     }

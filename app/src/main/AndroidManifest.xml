@@ -13,10 +13,10 @@
         android:theme="@style/Theme.Projekt_inz"
         tools:targetApi="31">
         <activity
-            android:name=".ui.home.EventEditActivity"
+            android:name=".ui.calendar.week_view.EventEditActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.home.WeekViewActivity"
+            android:name=".ui.calendar.week_view.WeekViewFragment"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

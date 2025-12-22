@@ -1,4 +1,4 @@
-package com.example.projekt_inz.ui.home
+package com.example.projekt_inz.ui.calendar.week_view
 
 import android.content.Context
 import android.view.LayoutInflater
