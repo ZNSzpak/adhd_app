@@ -2,12 +2,12 @@ package com.example.projekt_inz.ui.calendar
 
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
 object CalendarUtils {
 
     var selectedDate: LocalDate = LocalDate.now()
-
     fun monthYearFromDate(date: LocalDate): String {
         val formatter = DateTimeFormatter.ofPattern("MMMM yyyy")
         return date.format(formatter)

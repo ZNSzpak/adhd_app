@@ -10,7 +10,7 @@ import java.util.Locale
 
 class CalendarViewModel : ViewModel() {
 
-    private val _selectedDate = MutableLiveData(LocalDate.now())
+    val _selectedDate = MutableLiveData(LocalDate.now())
 
     private val _monthYearText = MutableLiveData<String>()
     val monthYearText: LiveData<String> = _monthYearText
