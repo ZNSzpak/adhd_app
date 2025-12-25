@@ -87,9 +87,6 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener {
     }
 
     private fun weeklyAction() {
-//        val intent = Intent(context, WeekViewFragment::class.java)
-//        intent.putExtra("selectedDate", CalendarUtils.selectedDate.toString())
-//        startActivity(intent)
         val selectedDate = viewModel._selectedDate.value ?: LocalDate.now()
 
         val bundle = Bundle().apply {
