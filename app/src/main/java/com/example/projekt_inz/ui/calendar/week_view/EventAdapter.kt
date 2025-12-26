@@ -1,33 +1,37 @@
 package com.example.projekt_inz.ui.calendar.week_view
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.example.projekt_inz.R
-import java.time.format.DateTimeFormatter
+import com.example.projekt_inz.ui.calendar.EventEntity
 
-class EventAdapter(
-    context: Context,
-    events: List<Event>
-) : ArrayAdapter<Event>(context,0, events) {
+class EventAdapter(private var events: List<EventEntity>) :
+    RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val view = convertView ?: LayoutInflater.from(context)
+    inner class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val nameText: TextView = itemView.findViewById(R.id.eventName)
+        val timeText: TextView = itemView.findViewById(R.id.eventTime)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
+        val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.event_cell, parent, false)
+        return EventViewHolder(view)
+    }
 
-        val event = getItem(position)
-        val eventCellTV = view.findViewById<TextView>(R.id.eventCellTV)
+    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
+        val event = events[position]
+        holder.nameText.text = event.name
+        holder.timeText.text = "${event.startMinute/60}:${event.startMinute%60} - ${event.endMinute/60}:${event.endMinute%60}"
+    }
 
-        if (event != null) {
-            val formatter = DateTimeFormatter.ofPattern("HH:mm")
-            val eventTime = event.time.format(formatter)
-            val eventTitle = "${event.name}  $eventTime"
-            eventCellTV.text = eventTitle
-        }
+    override fun getItemCount(): Int = events.size
 
-        return view
+    fun updateEvents(newEvents: List<EventEntity>) {
+        events = newEvents
+        notifyDataSetChanged()
     }
 }

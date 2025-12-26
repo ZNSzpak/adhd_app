@@ -30,7 +30,7 @@ class CalendarAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.calendar_cell_week, parent, false)
+            .inflate(R.layout.calendar_cell_month, parent, false)
         return CalendarViewHolder(view, onItemListener)
     }
 

@@ -19,6 +19,7 @@ import com.example.projekt_inz.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.ZoneId
 
 class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener {
 
@@ -64,9 +65,14 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener {
         weeklyViewButton.setOnClickListener {weeklyAction() }
 
         addButton.setOnClickListener {
-            val selectedDate = viewModel.selectedDate.value
+            val selectedDate = viewModel.selectedDate.value ?: LocalDate.now()
 
-            AddEventDialogFragment(selectedDate) { newEvent ->
+            val dateMillis = selectedDate
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli()
+
+            AddEventDialogFragment(dateMillis) { newEvent ->
                 viewModel.addEvent(newEvent)
             }.show(parentFragmentManager, "AddEventDialog")
         }
