@@ -1,19 +1,23 @@
 package com.example.projekt_inz.ui.calendar
 
-import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projekt_inz.R
-import com.example.projekt_inz.ui.calendar.week_view.WeekViewFragment
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener {
@@ -25,8 +29,11 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener {
     private lateinit var previousButton: Button
     private lateinit var nextButton: Button
     private lateinit var weeklyViewButton: Button
+    private lateinit var addButton: FloatingActionButton
 
     private lateinit var calendarAdapter: CalendarAdapter
+
+    private var selectedDate: LocalDate = LocalDate.now()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,10 +47,14 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener {
 
         findViews(view)
 
-        viewModel = ViewModelProvider(this)[CalendarViewModel::class.java]
+        val dao = EventDatabase.getInstance(requireContext()).eventDao()
+        val repository = EventRepository(dao)
+        val factory = CalendarViewModelFactory(repository)
 
-        setupButtons()
+        viewModel = ViewModelProvider(this, factory)[CalendarViewModel::class.java]
+
         setupRecyclerView()
+        setupButtons()
         observeViewModel()
     }
 
@@ -51,18 +62,18 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener {
         previousButton.setOnClickListener { viewModel.previousMonth() }
         nextButton.setOnClickListener { viewModel.nextMonth() }
         weeklyViewButton.setOnClickListener {weeklyAction() }
+
+        addButton.setOnClickListener {
+            val selectedDate = viewModel.selectedDate.value
+
+            AddEventDialogFragment(selectedDate) { newEvent ->
+                viewModel.addEvent(newEvent)
+            }.show(parentFragmentManager, "AddEventDialog")
+        }
     }
 
     private fun setupRecyclerView() {
-        calendarAdapter = CalendarAdapter(emptyList(), this)
-        calendarRecyclerView.layoutManager = GridLayoutManager(requireContext(), 7)
-        calendarRecyclerView.adapter = calendarAdapter
-    }
-    private fun setMonthView() {
-        monthYearText.text = viewModel.monthYearFromDate(CalendarUtils.selectedDate)
-        val daysInMonth = viewModel.daysInMonthArray(CalendarUtils.selectedDate)
-
-        val calendarAdapter = CalendarAdapter(daysInMonth, this)
+        calendarAdapter = CalendarAdapter(emptyList(), emptyMap(),LocalDate.now(), this)
         calendarRecyclerView.layoutManager = GridLayoutManager(requireContext(), 7)
         calendarRecyclerView.adapter = calendarAdapter
     }
@@ -73,21 +84,44 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener {
         previousButton = view.findViewById(R.id.month_navigation_previous)
         nextButton = view.findViewById(R.id.month_navigation_next)
         weeklyViewButton = view.findViewById(R.id.weekly_button)
+        addButton = view.findViewById(R.id.addEventInMonthButton)
     }
 
     private fun observeViewModel() {
-        viewModel.monthYearText.observe(viewLifecycleOwner) { text ->
-            monthYearText.text = text
-        }
-        viewModel.daysInMonth.observe(viewLifecycleOwner) { days ->
-            val calendarAdapter = CalendarAdapter(days, this)
-            calendarRecyclerView.layoutManager = GridLayoutManager(requireContext(), 7)
-            calendarRecyclerView.adapter = calendarAdapter
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+               launch{ viewModel.selectedDate.collect { date ->
+                    calendarAdapter.selectDate(date)
+                }}
+
+                // Month-Year label
+                launch {
+                    viewModel.monthYearText.collect { text ->
+                        monthYearText.text = text
+                    }
+                }
+
+                // Days in month
+                launch {
+                    viewModel.daysInMonth.collect { days ->
+                        calendarAdapter.submitDays(days)
+                    }
+                }
+
+                // Events for the month
+                launch {
+                    viewModel.eventsForMonth.collect { events ->
+                        val eventsMap = events.groupBy { LocalDate.ofEpochDay(it.dateEpochDay) }
+                        calendarAdapter.submitEvents(eventsMap)
+                    }
+                }
+            }
         }
     }
 
     private fun weeklyAction() {
-        val selectedDate = viewModel._selectedDate.value ?: LocalDate.now()
+        val selectedDate = viewModel.selectedDate.value ?: LocalDate.now()
 
         val bundle = Bundle().apply {
             putString("selectedDate", selectedDate.toString())
@@ -101,8 +135,9 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener {
 
     override fun onItemClick(position: Int, date: LocalDate?) {
         if (date != null) {
-            CalendarUtils.selectedDate = date
-            setMonthView()
+            viewModel.selectDate(date)
+           // calendarAdapter.selectDate(date)
         }
     }
+
 }

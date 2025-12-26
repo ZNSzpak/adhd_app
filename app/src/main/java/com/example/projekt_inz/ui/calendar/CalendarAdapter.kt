@@ -1,52 +1,43 @@
 package com.example.projekt_inz.ui.calendar
 
-import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projekt_inz.R
 import java.time.LocalDate
 
 class CalendarAdapter(
-    private val days: List<LocalDate?>,
+    private var days: List<LocalDate?> = emptyList(),
+    private var eventsMap: Map<LocalDate, List<EventEntity>> = emptyMap(),
+    private var selectedDate: LocalDate = LocalDate.now(),
     private val onItemListener: OnItemListener
-) :
-    RecyclerView.Adapter<CalendarViewHolder>() {
-    override fun onCreateViewHolder( parent: ViewGroup, viewType: Int): CalendarViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val view: View = inflater.inflate(R.layout.calendar_cell_week, parent, false)
-        val layoutParams = view.layoutParams
-        if (days.size > 15)  //month view
-            layoutParams.height = (parent.height * 0.166666666).toInt()
-        else  // week view
-            layoutParams.height = parent.height
-        return CalendarViewHolder(view, onItemListener, days)
+) : RecyclerView.Adapter<CalendarViewHolder>() {
+
+    fun selectDate(date: LocalDate) {
+        selectedDate = date
+        notifyDataSetChanged()
+    }
+
+    fun submitDays(newDays: List<LocalDate?>) {
+        days = newDays
+        notifyDataSetChanged()
+    }
+
+    fun submitEvents(newEvents: Map<LocalDate, List<EventEntity>>) {
+        eventsMap = newEvents
+        notifyDataSetChanged()
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.calendar_cell_week, parent, false)
+        return CalendarViewHolder(view, onItemListener)
     }
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
         val date = days[position]
-
-        if (date == null) {
-            holder.dayOfMonth.text = ""
-            holder.parentView.setBackgroundResource(0)
-            return
-        }
-
-        holder.dayOfMonth.text = date.dayOfMonth.toString()
-
-        when {
-            date.isEqual(LocalDate.now()) -> {
-                holder.parentView.setBackgroundColor(Color.LTGRAY)
-            }
-            date.isEqual(CalendarUtils.selectedDate) -> {
-                holder.parentView.setBackgroundColor(Color.YELLOW)
-            }
-            else -> {
-                holder.dayOfMonth.setTextColor(Color.BLACK)
-                holder.parentView.setBackgroundResource(0)
-            }
-        }
+        val events = date?.let { eventsMap[it] }
+        holder.bind(date, events, selectedDate)
     }
 
     override fun getItemCount(): Int {

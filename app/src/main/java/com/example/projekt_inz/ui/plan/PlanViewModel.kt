@@ -11,8 +11,6 @@ class PlanViewModel(
     val blocks = repository.allBlocks
     var hourHeight: Int = 0
 
-
-
     fun addBlock(block: PlanEntity) {
         viewModelScope.launch {
             repository.insert(block)
