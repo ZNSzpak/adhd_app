@@ -3,6 +3,7 @@ package com.example.projekt_inz.ui.routines.routine_list
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.ForeignKey
+import androidx.room.Index
 import com.example.projekt_inz.ui.routines.ButtonListEntry
 
 @Entity(
@@ -12,7 +13,8 @@ import com.example.projekt_inz.ui.routines.ButtonListEntry
         parentColumns = ["id"],
         childColumns = ["listId"],
         onDelete = ForeignKey.CASCADE
-    )]
+    )],
+    indices = [Index(value = ["listId"])]
 )
 data class TaskEntityRoutines(
     @PrimaryKey(autoGenerate = true)

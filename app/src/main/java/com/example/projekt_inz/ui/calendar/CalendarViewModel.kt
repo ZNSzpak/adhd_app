@@ -1,7 +1,12 @@
 package com.example.projekt_inz.ui.calendar
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.example.projekt_inz.ui.calendar.notifications.EventReminderWorker
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.time.LocalDate
@@ -13,8 +18,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
+import java.time.LocalTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 class CalendarViewModel(
     private val repository: EventRepository
@@ -118,12 +126,39 @@ class CalendarViewModel(
     fun addEvent(event: EventEntity) {
         viewModelScope.launch {
             repository.insert(event)
+
         }
+
     }
 
     fun deleteEvent(event: EventEntity) {
         viewModelScope.launch {
             repository.delete(event)
         }
+    }
+
+    fun scheduleEventNotification(event: EventEntity, context: Context) {
+        // Convert date + startMinute to epoch millis
+        val eventDate = LocalDate.ofEpochDay(event.dateEpochDay)
+        val eventStart = LocalTime.of(event.startMinute / 60, event.startMinute % 60)
+        val eventMillis = eventDate.atTime(eventStart).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+        val notifyTime = eventMillis - 24 * 60 * 60 * 1000 // 24h before
+
+        val delay = notifyTime - System.currentTimeMillis()
+        if (delay <= 0) return // skip past events
+
+        val data = Data.Builder()
+            .putString("eventName", event.name)
+            .putString("eventTime", "${eventStart.hour}:${eventStart.minute}")
+            .putInt("eventId", event.id)
+            .build()
+
+        val request = OneTimeWorkRequestBuilder<EventReminderWorker>()
+            .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+            .setInputData(data)
+            .build()
+
+        WorkManager.getInstance(context).enqueue(request)
     }
 }

@@ -17,6 +17,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.WorkManager
 import com.example.projekt_inz.R
 import com.example.projekt_inz.ui.calendar.AddEventDialogFragment
 import com.example.projekt_inz.ui.calendar.CalendarAdapter
@@ -97,6 +98,8 @@ class WeekViewFragment : Fragment() {
             onEdit = { event ->
                 EditEventDialogFragment(event) { updated ->
                     viewModel.addEvent(updated)
+                    WorkManager.getInstance(requireContext()).cancelUniqueWork("event-${event.id}")
+                    viewModel.scheduleEventNotification(event, requireContext())
                 }.show(parentFragmentManager, "EditEventDialog")
             },
             onDelete = { event ->
@@ -121,6 +124,7 @@ class WeekViewFragment : Fragment() {
 
             AddEventDialogFragment(selectedDate.toEpochDay()) { newEvent ->
                 viewModel.addEvent(newEvent)
+                viewModel.scheduleEventNotification(newEvent, requireContext())
             }.show(parentFragmentManager, "AddEventDialog")
         }
     }
