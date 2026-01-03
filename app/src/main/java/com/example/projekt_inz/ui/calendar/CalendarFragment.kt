@@ -52,7 +52,7 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener {
         val repository = EventRepository(dao)
         val factory = CalendarViewModelFactory(repository)
 
-        viewModel = ViewModelProvider(this, factory)[CalendarViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity(), factory)[CalendarViewModel::class.java]
 
         setupRecyclerView()
         setupButtons()
@@ -65,17 +65,13 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener {
         weeklyViewButton.setOnClickListener {weeklyAction() }
 
         addButton.setOnClickListener {
-            val selectedDate = viewModel.selectedDate.value ?: LocalDate.now()
+            val selectedDate = viewModel.selectedDate.value
 
-            val dateMillis = selectedDate
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant()
-                .toEpochMilli()
-
-            AddEventDialogFragment(dateMillis) { newEvent ->
+            AddEventDialogFragment(selectedDate.toEpochDay()) { newEvent ->
                 viewModel.addEvent(newEvent)
             }.show(parentFragmentManager, "AddEventDialog")
         }
+
     }
 
     private fun setupRecyclerView() {

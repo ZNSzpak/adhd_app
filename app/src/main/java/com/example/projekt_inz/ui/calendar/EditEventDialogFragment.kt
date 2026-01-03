@@ -1,9 +1,7 @@
 package com.example.projekt_inz.ui.calendar
 
 import android.app.DatePickerDialog
-import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,24 +9,21 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TimePicker
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.example.projekt_inz.R
-import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
 
-class AddEventDialogFragment(
-    private val initialDateEpochDay: Long,
-    private val onEventAdded: (EventEntity) -> Unit
+class EditEventDialogFragment(
+    private val event: EventEntity,
+    private val onEventUpdated: (EventEntity) -> Unit
 ) : DialogFragment() {
 
     private lateinit var editEventName: EditText
-    private lateinit var datePickerButton: Button
     private lateinit var startTimePicker: TimePicker
     private lateinit var endTimePicker: TimePicker
-    private lateinit var addButton: Button
+    private lateinit var saveButton: Button
     private lateinit var closeButton: ImageView
+    private lateinit var dateButton: Button
 
     private lateinit var selectedDate: LocalDate
 
@@ -38,16 +33,6 @@ class AddEventDialogFragment(
             STYLE_NO_TITLE,
             android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar_MinWidth
         )
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        dialog.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        return dialog
     }
 
     override fun onCreateView(
@@ -61,37 +46,35 @@ class AddEventDialogFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        selectedDate = LocalDate.ofEpochDay(initialDateEpochDay)
+        selectedDate = LocalDate.ofEpochDay(event.dateEpochDay)
 
         editEventName = view.findViewById(R.id.editEventName)
-        datePickerButton = view.findViewById(R.id.datePickerButtonEvent)
         startTimePicker = view.findViewById(R.id.startTimePickerEvent)
         endTimePicker = view.findViewById(R.id.endTimePickerEvent)
-        addButton = view.findViewById(R.id.btnAddBEvent)
+        saveButton = view.findViewById(R.id.btnAddBEvent)
         closeButton = view.findViewById(R.id.closeButtonAddEvent)
+        dateButton = view.findViewById(R.id.datePickerButtonEvent)
 
         startTimePicker.setIs24HourView(true)
         endTimePicker.setIs24HourView(true)
 
-//        selectedDate = Instant.ofEpochMilli(initialDateMillis)
-//            .atZone(ZoneId.systemDefault())
-//            .toLocalDate()
+        // Pre-fill data
+        editEventName.setText(event.name)
+        startTimePicker.hour = event.startMinute / 60
+        startTimePicker.minute = event.startMinute % 60
+        endTimePicker.hour = event.endMinute / 60
+        endTimePicker.minute = event.endMinute % 60
 
+        saveButton.text = "Save"
         updateDateButton()
 
-        datePickerButton.setOnClickListener { openDatePicker() }
-
+        dateButton.setOnClickListener { openDatePicker() }
         closeButton.setOnClickListener { dismiss() }
-
-        addButton.setOnClickListener { saveEvent() }
-    }
-
-    private fun updateDateButton() {
-        datePickerButton.text = selectedDate.toString()
+        saveButton.setOnClickListener { saveChanges() }
     }
 
     private fun openDatePicker() {
-        val dialog = DatePickerDialog(
+        DatePickerDialog(
             requireContext(),
             { _, year, month, day ->
                 selectedDate = LocalDate.of(year, month + 1, day)
@@ -100,34 +83,32 @@ class AddEventDialogFragment(
             selectedDate.year,
             selectedDate.monthValue - 1,
             selectedDate.dayOfMonth
-        )
-        dialog.show()
+        ).show()
+    }
+    private fun updateDateButton() {
+        dateButton.text = selectedDate.toString()
     }
 
-    private fun saveEvent() {
+    private fun saveChanges() {
         val name = editEventName.text.toString().trim()
         if (name.isEmpty()) {
             editEventName.error = "Enter event name"
             return
         }
 
-        val startMinutes = startTimePicker.hour * 60 + startTimePicker.minute
-        val endMinutes = endTimePicker.hour * 60 + endTimePicker.minute
+        val start = startTimePicker.hour * 60 + startTimePicker.minute
+        val end = endTimePicker.hour * 60 + endTimePicker.minute
 
-        if (endMinutes <= startMinutes) {
-            Toast.makeText(requireContext(), "End time must be after start time", Toast.LENGTH_SHORT).show()
-            return
-        }
+        if (end <= start) return
 
-        val event = EventEntity(
-            name = name,
-            dateEpochDay = selectedDate.toEpochDay(),
-            startMinute = startMinutes,
-            endMinute = endMinutes
+        onEventUpdated(
+            event.copy(
+                name = name,
+                dateEpochDay = selectedDate.toEpochDay(),
+                startMinute = start,
+                endMinute = end
+            )
         )
-
-        onEventAdded(event)
-        Log.d("AddEvent", "Saving event on day = ${selectedDate.toEpochDay()}")
         dismiss()
     }
 }

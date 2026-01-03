@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -21,7 +22,7 @@ class CalendarViewModel(
 
     // Selected date as StateFlow
     private val _selectedDate = MutableStateFlow(LocalDate.now())
-    val selectedDate: StateFlow<LocalDate> = _selectedDate
+    val selectedDate = _selectedDate.asStateFlow()
 
     // Month-Year text as Flow
     val monthYearText: StateFlow<String> = _selectedDate
@@ -50,6 +51,33 @@ class CalendarViewModel(
         }
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
+    val eventsForWeek: StateFlow<Map<LocalDate, List<EventEntity>>> =
+        selectedDate
+            .map { date ->
+                val start = date.with(DayOfWeek.MONDAY).toEpochDay()
+                val end = date.with(DayOfWeek.SUNDAY).toEpochDay()
+                start to end
+            }
+            .flatMapLatest { (start, end) ->
+                repository.getEventsInRange(start, end)
+            }
+            .map { events ->
+                events.groupBy { LocalDate.ofEpochDay(it.dateEpochDay) }
+            }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5_000),
+                emptyMap()
+            )
+
+
+    val daysInWeek: StateFlow<List<LocalDate>> = _selectedDate
+        .map { date ->
+            val start = date.with(DayOfWeek.MONDAY)
+            (0..6).map { start.plusDays(it.toLong()) }
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
     // -----------------------------
     // Functions to update state
     // -----------------------------
@@ -64,6 +92,8 @@ class CalendarViewModel(
     fun selectDate(date: LocalDate) {
         _selectedDate.value = date
     }
+    fun previousWeek() { _selectedDate.value = _selectedDate.value.minusWeeks(1) }
+    fun nextWeek() { _selectedDate.value = _selectedDate.value.plusWeeks(1) }
 
     fun monthYearFromDate(date: LocalDate): String {
         val formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault())
@@ -88,6 +118,12 @@ class CalendarViewModel(
     fun addEvent(event: EventEntity) {
         viewModelScope.launch {
             repository.insert(event)
+        }
+    }
+
+    fun deleteEvent(event: EventEntity) {
+        viewModelScope.launch {
+            repository.delete(event)
         }
     }
 }

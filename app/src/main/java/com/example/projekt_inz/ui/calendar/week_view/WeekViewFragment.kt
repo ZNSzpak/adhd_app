@@ -2,6 +2,7 @@ package com.example.projekt_inz.ui.calendar.week_view
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,10 +15,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projekt_inz.R
 import com.example.projekt_inz.ui.calendar.AddEventDialogFragment
 import com.example.projekt_inz.ui.calendar.CalendarAdapter
+import com.example.projekt_inz.ui.calendar.CalendarViewModel
+import com.example.projekt_inz.ui.calendar.CalendarViewModelFactory
+import com.example.projekt_inz.ui.calendar.EditEventDialogFragment
 import com.example.projekt_inz.ui.calendar.EventDatabase
 import com.example.projekt_inz.ui.calendar.EventRepository
 import kotlinx.coroutines.launch
@@ -25,7 +30,7 @@ import java.time.LocalDate
 
 class WeekViewFragment : Fragment() {
 
-    private lateinit var viewModel: WeekViewModel
+    private lateinit var viewModel: CalendarViewModel
 
     private lateinit var monthYearText: TextView
     private lateinit var calendarRecyclerView: RecyclerView
@@ -48,11 +53,16 @@ class WeekViewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val dateString = arguments?.getString("selectedDate")
+        val selectedDate = dateString?.let { LocalDate.parse(it) } ?: LocalDate.now()
+
         val dao = EventDatabase.getInstance(requireContext()).eventDao()
         val repository = EventRepository(dao)
-        val factory = WeekViewModelFactory(repository)
+        val factory = CalendarViewModelFactory(repository)
 
-        viewModel = ViewModelProvider(this, factory)[WeekViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity(), factory)[CalendarViewModel::class.java]
+
+        viewModel.selectDate(selectedDate)
 
         findViews(view)
         setupRecyclerView()
@@ -70,8 +80,11 @@ class WeekViewFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        weekAdapter = WeekViewAdapter { selectedDate ->
-            viewModel.selectDate(selectedDate)
+        weekAdapter = WeekViewAdapter(
+            days = emptyList(),
+            selectedDate = viewModel.selectedDate.value
+        ) { clickedDate ->
+            viewModel.selectDate(clickedDate)  // update ViewModel
         }
 
         calendarRecyclerView.apply {
@@ -79,8 +92,18 @@ class WeekViewFragment : Fragment() {
             adapter = weekAdapter
         }
 
-        // You can later replace this with a RecyclerView
-        eventAdapter = EventAdapter(emptyList())
+        eventAdapter = EventAdapter(
+            events = emptyList(),
+            onEdit = { event ->
+                EditEventDialogFragment(event) { updated ->
+                    viewModel.addEvent(updated)
+                }.show(parentFragmentManager, "EditEventDialog")
+            },
+            onDelete = { event ->
+                viewModel.deleteEvent(event)
+            }
+        )
+        eventRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         eventRecyclerView.adapter = eventAdapter
     }
 
@@ -94,16 +117,13 @@ class WeekViewFragment : Fragment() {
         }
 
         addEventButton.setOnClickListener {
-            val selectedDateMillis = viewModel.selectedDate.value.toEpochDay() * 24*60*60*1000 // millis
-            AddEventDialogFragment(selectedDateMillis) { newEvent ->
+            val selectedDate = viewModel.selectedDate.value
+
+            AddEventDialogFragment(selectedDate.toEpochDay()) { newEvent ->
                 viewModel.addEvent(newEvent)
             }.show(parentFragmentManager, "AddEventDialog")
         }
     }
-
-    // ----------------------------------------------------
-    // ViewModel observation
-    // ----------------------------------------------------
 
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
@@ -118,12 +138,26 @@ class WeekViewFragment : Fragment() {
                 launch {
                     viewModel.daysInWeek.collect { days ->
                         weekAdapter.submitDays(days)
+                        weekAdapter.setSelectedDate(viewModel.selectedDate.value)
                     }
                 }
 
                 launch {
                     viewModel.eventsForSelectedDay.collect { events ->
+                        Log.d("WeekView", "Events loaded: ${events.size}")
                         eventAdapter.updateEvents(events)
+                    }
+                }
+
+                launch {
+                    viewModel.eventsForWeek.collect { events ->
+                        weekAdapter.submitEvents(events)
+                    }
+                }
+
+                launch {
+                    viewModel.selectedDate.collect { date ->
+                        weekAdapter.setSelectedDate(date)  // highlight new date
                     }
                 }
             }

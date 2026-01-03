@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projekt_inz.R
+import com.example.projekt_inz.ui.calendar.EventEntity
 import java.time.LocalDate
 
 class WeekViewAdapter(
     private var days: List<LocalDate> = emptyList(),
+    private var events: Map<LocalDate, List<EventEntity>> = emptyMap(),
     private var selectedDate: LocalDate = LocalDate.now(),
     private val onDayClick: (LocalDate) -> Unit
 ) : RecyclerView.Adapter<WeekViewAdapter.WeekDayViewHolder>() {
@@ -25,6 +27,11 @@ class WeekViewAdapter(
         notifyDataSetChanged()
     }
 
+    fun submitEvents(newEvents: Map<LocalDate, List<EventEntity>>) {
+        events = newEvents
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeekDayViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.calendar_cell_week, parent, false)
@@ -33,7 +40,7 @@ class WeekViewAdapter(
 
     override fun onBindViewHolder(holder: WeekDayViewHolder, position: Int) {
         val date = days[position]
-        holder.bind(date)
+        holder.bind(date, selectedDate)
     }
 
     override fun getItemCount(): Int = days.size
@@ -42,7 +49,7 @@ class WeekViewAdapter(
         private val dayText: TextView = itemView.findViewById(R.id.cellDayText)
         private val parentView: View = itemView.findViewById(R.id.parentView)
 
-        fun bind(date: LocalDate) {
+        fun bind(date: LocalDate, selectedDate: LocalDate) {
             dayText.text = date.dayOfMonth.toString()
 
             parentView.setBackgroundResource(0)
@@ -56,11 +63,12 @@ class WeekViewAdapter(
                     parentView.setBackgroundColor(Color.parseColor("#ADD8E6"))
             }
 
-            itemView.setOnClickListener {
-                selectedDate = date // update adapter selection
-                notifyDataSetChanged() // refresh UI
-                onDayClick(date)      // notify fragment
-            }
+//            itemView.setOnClickListener {
+//                selectedDate = date // update adapter selection
+//                notifyDataSetChanged() // refresh UI
+//                onDayClick(date)      // notify fragment
+//            }
+            itemView.setOnClickListener { onDayClick(date) }
         }
     }
 }
