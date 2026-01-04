@@ -1,7 +1,6 @@
 package com.example.projekt_inz.ui.routines
 
 import androidx.lifecycle.LiveData
-import com.example.projekt_inz.ui.todolist.TaskEntity
 
 class RoutinesRepository(private val dao: RoutinesDao) {
 

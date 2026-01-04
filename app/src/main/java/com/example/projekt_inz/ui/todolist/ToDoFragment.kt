@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +21,8 @@ class ToDoFragment : Fragment() {
 
     private lateinit var taskAdapter: TaskAdapter
 
+    private lateinit var pointsCounter: TextView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,7 +34,11 @@ class ToDoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val dao = TaskDatabase.getDatabase(requireContext()).taskDao()
         val repository = TaskRepository(dao)
-        val factory = ToDoViewModelFactory(repository)
+
+        val db = TaskDatabase.getDatabase(requireContext())
+        val scoreRepo = ScoreRepository(db.scoreDao())
+
+        val factory = ToDoViewModelFactory(repository, scoreRepo)
 
         findViews(view)
 
@@ -45,6 +52,7 @@ class ToDoFragment : Fragment() {
     private fun findViews(view: View) {
         taskList = view.findViewById(R.id.taskList)
         addButton = view.findViewById(R.id.addButton)
+        pointsCounter = view.findViewById(R.id.pointsCounter)
     }
 
     private fun setupRecyclerView() {
@@ -65,6 +73,10 @@ class ToDoFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.tasks.observe(viewLifecycleOwner) { tasks ->
             taskAdapter.submitList(tasks) //
+        }
+
+        viewModel.score.observe(viewLifecycleOwner) { score ->
+            pointsCounter.text = (score?.points ?: 0).toString()
         }
     }
 
