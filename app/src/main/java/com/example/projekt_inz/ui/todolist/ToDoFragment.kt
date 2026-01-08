@@ -1,5 +1,6 @@
 package com.example.projekt_inz.ui.todolist
 
+import android.media.SoundPool
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,13 +16,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class ToDoFragment : Fragment() {
 
     private lateinit var viewModel: ToDoViewModel
-
     private lateinit var taskList: RecyclerView
     private lateinit var addButton: FloatingActionButton
-
     private lateinit var taskAdapter: TaskAdapter
-
     private lateinit var pointsCounter: TextView
+    private var fanfarePlayed = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,11 +71,33 @@ class ToDoFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.tasks.observe(viewLifecycleOwner) { tasks ->
-            taskAdapter.submitList(tasks) //
+            taskAdapter.submitList(tasks)
+
+            if (tasks.isNotEmpty() && tasks.all { it.isDone }) {
+                if (!fanfarePlayed) {
+                    playFanfare()
+                    fanfarePlayed = true
+                }
+            } else {
+                // Reset when any task becomes unchecked
+                fanfarePlayed = false
+            }
         }
 
         viewModel.score.observe(viewLifecycleOwner) { score ->
             pointsCounter.text = (score?.points ?: 0).toString()
+        }
+    }
+
+    private fun playFanfare() {
+        val soundPool = SoundPool.Builder()
+            .setMaxStreams(1)
+            .build()
+
+        val soundId = soundPool.load(requireContext(), R.raw.fanfare, 1)
+
+        soundPool.setOnLoadCompleteListener { _, _, _ ->
+            soundPool.play(soundId, 1f, 1f, 1, 0, 1f)
         }
     }
 
