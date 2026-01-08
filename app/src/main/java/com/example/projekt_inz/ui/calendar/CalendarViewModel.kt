@@ -103,12 +103,34 @@ class CalendarViewModel(
     fun previousWeek() { _selectedDate.value = _selectedDate.value.minusWeeks(1) }
     fun nextWeek() { _selectedDate.value = _selectedDate.value.plusWeeks(1) }
 
-    fun monthYearFromDate(date: LocalDate): String {
-        val formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault())
-        return date.format(formatter)
+    companion object {
+        val CUSTOM_MONTHS = listOf(
+            "Styczeń",
+            "Luty",
+            "Marzec",
+            "Kwiecień",
+            "Maj",
+            "Czerwiec",
+            "Lipiec",
+            "Sierpień",
+            "Wrzesień",
+            "Październik",
+            "Listopad",
+            "Grudzień"
+        )
     }
 
-    fun daysInMonthArray(date: LocalDate): List<LocalDate?> {
+    private fun monthYearFromDate(date: LocalDate): String {
+//        val formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale("pl", "PL"))
+//        return date.format(formatter)
+        val index = date.monthValue - 1
+        val monthName = CUSTOM_MONTHS.getOrElse(index) {
+            date.month.name.lowercase().replaceFirstChar { it.uppercase() }
+        }
+        return "$monthName ${date.year}"
+    }
+
+    private fun daysInMonthArray(date: LocalDate): List<LocalDate?> {
         val daysList = mutableListOf<LocalDate?>()
         val yearMonth = YearMonth.from(date)
         val daysInMonth = yearMonth.lengthOfMonth()

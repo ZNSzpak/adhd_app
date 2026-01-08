@@ -1,5 +1,6 @@
 package com.example.projekt_inz.ui.todolist
 
+import android.graphics.Paint
 import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageView
@@ -24,7 +25,14 @@ class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         taskText.text = task.text
         checkbox.isChecked = task.isDone
 
-        // actions
+        if (task.isDone) {
+            taskText.paintFlags =
+                taskText.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        } else {
+            taskText.paintFlags =
+                taskText.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+        }
+
         editTask.setOnClickListener { onEdit(task) }
         deleteTask.setOnClickListener { onDelete(task) }
         checkbox.setOnCheckedChangeListener { _, checked ->
