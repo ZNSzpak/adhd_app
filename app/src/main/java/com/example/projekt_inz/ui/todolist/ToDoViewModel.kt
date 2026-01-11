@@ -26,7 +26,9 @@ class ToDoViewModel(
 
     fun addTask(text: String) {
         viewModelScope.launch {
-            repository.addTask(text)
+            val maxPosition = repository.getMaxPosition() ?: -1
+            val task = TaskEntity(text = text, position = maxPosition + 1)
+            repository.addTask(task)
         }
     }
 
@@ -40,6 +42,7 @@ class ToDoViewModel(
     }
 
     fun updateTask(task: TaskEntity, newText: String) {
+        if (task.text == newText) return
         viewModelScope.launch {
             repository.updateTask(task.copy(text = newText))
         }
@@ -51,4 +54,19 @@ class ToDoViewModel(
         }
     }
 
+    fun moveTask(from: Int, to: Int) {
+        val currentList = tasks.value?.toMutableList() ?: return
+        if (from !in currentList.indices || to !in currentList.indices) return
+
+        val item = currentList.removeAt(from)
+        currentList.add(to, item)
+
+        viewModelScope.launch {
+            currentList.forEachIndexed { index, task ->
+                if (task.position != index) {
+                    repository.updateTask(task.copy(position = index))
+                }
+            }
+        }
+    }
 }

@@ -23,12 +23,35 @@ class TaskRoutinesViewModel (private val repository: TaskRoutinesRepository, pri
 
     fun addTask(newText: String) {
         viewModelScope.launch {
+
+            val maxPosition = repository.getMaxPositionForList(listId) ?: -1
+
             repository.addTask(
                 TaskEntityRoutines(
                     listId = listId,
-                    text = newText
+                    text = newText,
+                    position = maxPosition + 1
                 )
             )
+        }
+    }
+
+    fun moveTask(from: Int, to: Int) {
+        val currentList = tasks.value?.toMutableList() ?: return
+
+        if (from !in currentList.indices || to !in currentList.indices) return
+
+        // Move the item in the list
+        val item = currentList.removeAt(from)
+        currentList.add(to, item)
+
+        viewModelScope.launch {
+            // Only update tasks whose position changed
+            currentList.forEachIndexed { index, task ->
+                if (task.position != index) {
+                    repository.updateTask(task.copy(position = index))
+                }
+            }
         }
     }
 

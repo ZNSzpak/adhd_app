@@ -21,5 +21,6 @@ data class TaskEntityRoutines(
     val id: Long = 0,
     val listId: Long,          // FK to the button/list
     val text: String,
-    val isDone: Boolean = false
+    val isDone: Boolean = false,
+    val position: Int
 )

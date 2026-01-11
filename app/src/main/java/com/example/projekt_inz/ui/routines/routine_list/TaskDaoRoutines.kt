@@ -6,8 +6,11 @@ import androidx.room.*
 @Dao
 interface TaskDaoRoutines {
 
-    @Query("SELECT * FROM routine_tasks WHERE listId = :listId ORDER BY id ASC")
+    @Query("SELECT * FROM routine_tasks WHERE listId = :listId ORDER BY position  ASC")
     fun getTasksForList(listId: Long): LiveData<List<TaskEntityRoutines>>
+
+    @Query("UPDATE routine_tasks SET isDone = 0 WHERE isDone = 1")
+    suspend fun resetDoneTasks()
 
     @Insert
     suspend fun insertTask(task: TaskEntityRoutines): Long
@@ -20,4 +23,7 @@ interface TaskDaoRoutines {
 
     @Query("DELETE FROM routine_tasks WHERE listId = :listId")
     suspend fun deleteTasksForList(listId: Long)
+
+    @Query("SELECT MAX(position) FROM routine_tasks WHERE listId = :listId")
+    suspend fun getMaxPositionForList(listId: Long): Int?
 }

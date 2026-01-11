@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projekt_inz.R
@@ -46,6 +47,10 @@ class ToDoFragment : Fragment() {
         setupRecyclerView()
         observeViewModel()
         setupAddButton()
+
+        val callback = TaskDragCallback(taskAdapter)
+        val touchHelper = ItemTouchHelper(callback)
+        touchHelper.attachToRecyclerView(taskList)
     }
 
     private fun findViews(view: View) {
@@ -62,7 +67,10 @@ class ToDoFragment : Fragment() {
                 }.show(parentFragmentManager, "EditTask")
             },
             onDelete = { task -> viewModel.deleteTask(task) },
-            onChecked = { task, checked -> viewModel.toggleTask(task, checked) }
+            onChecked = { task, checked -> viewModel.toggleTask(task, checked) },
+            onMove = { fromPosition, toPosition ->
+                viewModel.moveTask(fromPosition, toPosition)
+            }
         )
 
         taskList.layoutManager = LinearLayoutManager(requireContext())
@@ -71,7 +79,24 @@ class ToDoFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.tasks.observe(viewLifecycleOwner) { tasks ->
-            taskAdapter.submitList(tasks)
+            val currentList = taskAdapter.currentList.toMutableList()
+
+            val taskMap = tasks.associateBy { it.id }
+
+            val updatedList = currentList.mapNotNull { oldTask ->
+                taskMap[oldTask.id]
+            }.toMutableList()
+
+            // Insert any new tasks at their DB position
+            val newTasks = tasks.filter { updatedList.none { it.id == it.id } }
+                .sortedBy { it.position }
+            newTasks.forEach { newTask ->
+                val insertIndex = updatedList.indexOfFirst { it.position > newTask.position }
+                if (insertIndex == -1) updatedList.add(newTask)
+                else updatedList.add(insertIndex, newTask)
+            }
+
+            taskAdapter.submitList(updatedList)
 
             if (tasks.isNotEmpty() && tasks.all { it.isDone }) {
                 if (!fanfarePlayed) {

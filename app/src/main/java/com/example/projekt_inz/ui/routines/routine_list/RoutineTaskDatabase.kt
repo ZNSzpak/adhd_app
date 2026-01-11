@@ -12,7 +12,7 @@ import com.example.projekt_inz.ui.routines.RoutinesDao
         ButtonListEntry::class,
         TaskEntityRoutines::class
     ],
-    version = 3,
+    version = 5,
     exportSchema = false
 )
 abstract class RoutineTaskDatabase : RoomDatabase() {

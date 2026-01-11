@@ -14,7 +14,8 @@ import com.example.projekt_inz.R
 class TaskRoutinesAdapter (
     private val onEdit: (TaskEntityRoutines) -> Unit,
     private val onDelete: (TaskEntityRoutines) -> Unit,
-    private val onChecked: (TaskEntityRoutines, Boolean) -> Unit
+    private val onChecked: (TaskEntityRoutines, Boolean) -> Unit,
+    private val onMove: (Int, Int) -> Unit
 ) : ListAdapter<TaskEntityRoutines, TaskRoutinesAdapter.TaskViewHolder>(TaskDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
@@ -52,7 +53,15 @@ class TaskRoutinesAdapter (
             }
         }
     }
+    fun moveItem(from: Int, to: Int) {
+        val currentList = currentList.toMutableList()
+        val item = currentList.removeAt(from)
+        currentList.add(to, item)
+        submitList(currentList)
+        onMove(from, to)
+    }
 }
+
 
 class TaskDiffCallback : DiffUtil.ItemCallback<TaskEntityRoutines>() {
     override fun areItemsTheSame(oldItem: TaskEntityRoutines, newItem: TaskEntityRoutines): Boolean {

@@ -7,12 +7,18 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.projekt_inz.R
 import com.example.projekt_inz.ui.todolist.AddTaskDialogFragment
 import com.example.projekt_inz.ui.todolist.EditTaskDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.util.Calendar
+import java.util.concurrent.TimeUnit
 
 class TodoListFragment : Fragment() {
 
@@ -61,6 +67,12 @@ class TodoListFragment : Fragment() {
         setupRecyclerView()
         observeViewModel()
         setupAddButton()
+
+        val callback = TaskDragCallback(taskAdapter)
+        val touchHelper = ItemTouchHelper(callback)
+        touchHelper.attachToRecyclerView(taskListR)
+
+        scheduleMidnightReset()
     }
 
     private fun setupRecyclerView() {
@@ -71,16 +83,45 @@ class TodoListFragment : Fragment() {
                 }.show(parentFragmentManager, "EditTask")
             },
             onDelete = { task -> viewModel.deleteTask(task) },
-            onChecked = { task, checked -> viewModel.toggleTask(task, checked) }
+            onChecked = { task, checked -> viewModel.toggleTask(task, checked) },
+            onMove = { fromPosition, toPosition ->
+                viewModel.moveTask(fromPosition, toPosition)
+            }
         )
 
         taskListR.layoutManager = LinearLayoutManager(requireContext())
         taskListR.adapter = taskAdapter
     }
 
+//    private fun observeViewModel() {
+//        viewModel.tasks.observe(viewLifecycleOwner) { tasks ->
+//            taskAdapter.submitList(tasks.toList()) //
+//        }
+//    }
+
     private fun observeViewModel() {
-        viewModel.tasks.observe(viewLifecycleOwner) { tasks ->
-            taskAdapter.submitList(tasks.toList()) //
+        viewModel.tasks.observe(viewLifecycleOwner) { tasksFromDb ->
+            val currentList = taskAdapter.currentList.toMutableList()
+
+            val taskMap = tasksFromDb.associateBy { it.id }
+
+            // Keep current adapter order for existing tasks, update fields
+            val updatedList = currentList.mapNotNull { oldTask ->
+                taskMap[oldTask.id]
+            }.toMutableList()
+
+            // Add new tasks at the correct position
+            val newTasks = tasksFromDb.filter { task ->
+                updatedList.none { it.id == task.id }
+            }.sortedBy { it.position } // sort by DB position
+            newTasks.forEach { newTask ->
+                // Insert new tasks at the correct index
+                val insertIndex = updatedList.indexOfFirst { it.position > newTask.position }
+                if (insertIndex == -1) updatedList.add(newTask)
+                else updatedList.add(insertIndex, newTask)
+            }
+
+            taskAdapter.submitList(updatedList)
         }
     }
 
@@ -92,5 +133,28 @@ class TodoListFragment : Fragment() {
 
             }.show(parentFragmentManager, "AddTaskDialog")
         }
+    }
+
+    private fun scheduleMidnightReset() {
+        val now = Calendar.getInstance()
+        val nextMidnight = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+            if (before(now)) add(Calendar.DAY_OF_MONTH, 1)
+        }
+
+        val initialDelay = nextMidnight.timeInMillis - now.timeInMillis
+
+        val resetWork = PeriodicWorkRequestBuilder<ResetRoutinesWorker>(1, TimeUnit.DAYS)
+            .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
+            .build()
+
+        WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
+            "reset_routines",
+            ExistingPeriodicWorkPolicy.KEEP, // ensures only one worker exists
+            resetWork
+        )
     }
 }

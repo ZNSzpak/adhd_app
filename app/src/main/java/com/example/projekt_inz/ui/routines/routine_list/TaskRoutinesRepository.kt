@@ -12,5 +12,7 @@ class TaskRoutinesRepository(private val dao: TaskDaoRoutines) {
 
     suspend fun deleteTask(task: TaskEntityRoutines) = dao.deleteTask(task)
 
-    suspend fun deleteTasksForList(listId: Long) = dao.deleteTasksForList(listId)
+    suspend fun getMaxPositionForList(listId: Long): Int? {
+        return dao.getMaxPositionForList(listId)
+    }
 }
