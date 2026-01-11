@@ -87,16 +87,17 @@ class ToDoFragment : Fragment() {
                 taskMap[oldTask.id]
             }.toMutableList()
 
-            // Insert any new tasks at their DB position
-            val newTasks = tasks.filter { updatedList.none { it.id == it.id } }
-                .sortedBy { it.position }
+            val newTasks = tasks.filter { task ->
+                updatedList.none { it.id == task.id }
+            }.sortedBy { it.position }
+
             newTasks.forEach { newTask ->
                 val insertIndex = updatedList.indexOfFirst { it.position > newTask.position }
                 if (insertIndex == -1) updatedList.add(newTask)
                 else updatedList.add(insertIndex, newTask)
             }
 
-            taskAdapter.submitList(updatedList)
+            taskAdapter.submitList(updatedList.toList())
 
             if (tasks.isNotEmpty() && tasks.all { it.isDone }) {
                 if (!fanfarePlayed) {
