@@ -20,8 +20,6 @@ import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalTime
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class CalendarViewModel(
@@ -50,14 +48,14 @@ class CalendarViewModel(
             val end = ym.atEndOfMonth().toEpochDay()
             repository.getEventsInRange(start, end)
         }
-        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     // Events for selected day as Flow
     val eventsForSelectedDay: StateFlow<List<EventEntity>> = _selectedDate
         .flatMapLatest { date ->
             repository.getEventsForDay(date.toEpochDay())
         }
-        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     val daysWithEvents: StateFlow<Set<LocalDate>> =
         eventsForMonth
@@ -156,42 +154,56 @@ class CalendarViewModel(
         return daysList
     }
 
-    fun addEvent(event: EventEntity) {
+    fun addEvent(event: EventEntity, context: Context) {
         viewModelScope.launch {
             repository.insert(event)
-
+            scheduleEventNotification(event, context)
         }
 
     }
 
-    fun deleteEvent(event: EventEntity) {
+    fun deleteEvent(event: EventEntity, context: Context) {
         viewModelScope.launch {
             repository.delete(event)
+            WorkManager.getInstance(context)
+                .cancelAllWorkByTag("event_${event.id}")
         }
     }
 
     fun scheduleEventNotification(event: EventEntity, context: Context) {
-        // Convert date + startMinute to epoch millis
+
         val eventDate = LocalDate.ofEpochDay(event.dateEpochDay)
-        val eventStart = LocalTime.of(event.startMinute / 60, event.startMinute % 60)
-        val eventMillis = eventDate.atTime(eventStart).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val eventStart = LocalTime.of(
+            event.startMinute / 60,
+            event.startMinute % 60
+        )
 
-        val notifyTime = eventMillis - 24 * 60 * 60 * 1000 // 24h before
+        val eventMillis = eventDate
+            .atTime(eventStart)
+            .atZone(ZoneId.systemDefault())
+            .toInstant()
+            .toEpochMilli()
 
-        val delay = notifyTime - System.currentTimeMillis()
-        if (delay <= 0) return // skip past events
+        val notifyMillis = eventMillis - TimeUnit.HOURS.toMillis(24)
+
+        val delay = notifyMillis - System.currentTimeMillis()
+        if (delay <= 0) return
 
         val data = Data.Builder()
-            .putString("eventName", event.name)
-            .putString("eventTime", "${eventStart.hour}:${eventStart.minute}")
             .putInt("eventId", event.id)
+            .putString("eventName", event.name)
+            .putLong("eventTimeMillis", eventMillis)
             .build()
 
         val request = OneTimeWorkRequestBuilder<EventReminderWorker>()
             .setInitialDelay(delay, TimeUnit.MILLISECONDS)
             .setInputData(data)
+            .addTag("event_${event.id}") // 🔥 important
             .build()
 
-        WorkManager.getInstance(context).enqueue(request)
+        WorkManager
+            .getInstance(context)
+            .enqueue(request)
     }
+
 }

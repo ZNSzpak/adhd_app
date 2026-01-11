@@ -1,13 +1,11 @@
 package com.example.projekt_inz.ui.calendar.week_view
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ListView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -20,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkManager
 import com.example.projekt_inz.R
 import com.example.projekt_inz.ui.calendar.AddEventDialogFragment
-import com.example.projekt_inz.ui.calendar.CalendarAdapter
 import com.example.projekt_inz.ui.calendar.CalendarViewModel
 import com.example.projekt_inz.ui.calendar.CalendarViewModelFactory
 import com.example.projekt_inz.ui.calendar.EditEventDialogFragment
@@ -97,13 +94,13 @@ class WeekViewFragment : Fragment() {
             events = emptyList(),
             onEdit = { event ->
                 EditEventDialogFragment(event) { updated ->
-                    viewModel.addEvent(updated)
+                    viewModel.addEvent(updated, requireContext().applicationContext)
                     WorkManager.getInstance(requireContext()).cancelUniqueWork("event-${event.id}")
                     viewModel.scheduleEventNotification(event, requireContext())
                 }.show(parentFragmentManager, "EditEventDialog")
             },
             onDelete = { event ->
-                viewModel.deleteEvent(event)
+                viewModel.deleteEvent(event, requireContext().applicationContext)
             }
         )
         eventRecyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -123,7 +120,7 @@ class WeekViewFragment : Fragment() {
             val selectedDate = viewModel.selectedDate.value
 
             AddEventDialogFragment(selectedDate.toEpochDay()) { newEvent ->
-                viewModel.addEvent(newEvent)
+                viewModel.addEvent(newEvent, requireContext().applicationContext)
                 viewModel.scheduleEventNotification(newEvent, requireContext())
             }.show(parentFragmentManager, "AddEventDialog")
         }

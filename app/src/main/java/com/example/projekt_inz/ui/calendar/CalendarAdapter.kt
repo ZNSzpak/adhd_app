@@ -7,44 +7,42 @@ import com.example.projekt_inz.R
 import java.time.LocalDate
 
 class CalendarAdapter(
-    private var days: List<LocalDate?> = emptyList(),
-    private var eventsMap: Map<LocalDate, List<EventEntity>> = emptyMap(),
-    private var selectedDate: LocalDate = LocalDate.now(),
-    private val onItemListener: OnItemListener
+    private val onDateClick: (LocalDate) -> Unit
 ) : RecyclerView.Adapter<CalendarViewHolder>() {
 
-    fun selectDate(date: LocalDate) {
-        selectedDate = date
+    private var days: List<LocalDate?> = emptyList()
+    private var eventsMap: Map<LocalDate, List<EventEntity>> = emptyMap()
+    private var selectedDate: LocalDate? = null
+
+    fun submit(
+        days: List<LocalDate?>,
+        eventsMap: Map<LocalDate, List<EventEntity>>,
+        selectedDate: LocalDate
+    ) {
+        this.days = days
+        this.eventsMap = eventsMap
+        this.selectedDate = selectedDate
         notifyDataSetChanged()
     }
 
-    fun submitDays(newDays: List<LocalDate?>) {
-        days = newDays
-        notifyDataSetChanged()
-    }
-
-    fun submitEvents(newEvents: Map<LocalDate, List<EventEntity>>) {
-        eventsMap = newEvents
-        notifyDataSetChanged()
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): CalendarViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.calendar_cell_month, parent, false)
-        return CalendarViewHolder(view, onItemListener)
+        return CalendarViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
         val date = days[position]
-        val events = date?.let { eventsMap[it] }
-        holder.bind(date, events, selectedDate)
+        holder.bind(
+            date = date,
+            events = date?.let { eventsMap[it] },
+            isSelected = date == selectedDate,
+            onClick = onDateClick
+        )
     }
 
-    override fun getItemCount(): Int {
-        return days.size
-    }
-
-    interface OnItemListener {
-        fun onItemClick(position: Int, date: LocalDate?)
-    }
+    override fun getItemCount() = days.size
 }
