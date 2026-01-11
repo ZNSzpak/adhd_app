@@ -40,10 +40,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Do zrobienia..."
+                app:boxBackgroundMode="outline"
                 app:boxStrokeWidth="1dp"
                 app:boxStrokeWidthFocused="2dp">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/todoEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -88,7 +88,7 @@ class PlanFragment : Fragment() {
                 cell.id = View.generateViewId()
                 cell.layoutParams = TableRow.LayoutParams(
                     0,
-                    dpToPx(60f),
+                    dpToPx(100f),
                     1f
                 )
                 row.addView(cell)
@@ -120,18 +120,6 @@ class PlanFragment : Fragment() {
         addButton = view.findViewById(R.id.addBlockButton)
         table = requireView().findViewById(R.id.timetableTable)
     }
-
-//    private val onBlockClick: (PlanEntity) -> Unit = { block ->
-//        ShowBlockDialogFragment.newInstance(
-//            id = block.id,
-//            name = block.name,
-//            dayOfWeek = block.dayOfWeek,
-//            startMinute = block.startMinute,
-//            endMinute = block.endMinute
-//        ) { idToDelete ->
-//            viewModel.deleteBlockById(idToDelete)
-//        }.show(childFragmentManager, "ShowBlockDialog")
-//    }
 
     private val onBlockClick: (PlanEntity) -> Unit = { block ->
         ShowBlockDialogFragment.newInstance(

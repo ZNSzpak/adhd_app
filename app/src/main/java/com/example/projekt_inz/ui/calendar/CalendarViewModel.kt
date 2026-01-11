@@ -59,6 +59,17 @@ class CalendarViewModel(
         }
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
+    val daysWithEvents: StateFlow<Set<LocalDate>> =
+        eventsForMonth
+            .map { events ->
+                events.map { LocalDate.ofEpochDay(it.dateEpochDay) }.toSet()
+            }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5_000),
+                emptySet()
+            )
+
     val eventsForWeek: StateFlow<Map<LocalDate, List<EventEntity>>> =
         selectedDate
             .map { date ->

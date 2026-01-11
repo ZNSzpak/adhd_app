@@ -9,9 +9,6 @@ interface NotesDao {
     @Query("SELECT * FROM notes ORDER BY id ASC")
     fun getAllNotes(): LiveData<List<NoteEntity>>
 
-//    @Query("SELECT * FROM notes WHERE id = :id LIMIT 1")
-//    suspend fun getNoteById(id: Long): NoteEntity?
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNote(note: NoteEntity): Long
 

@@ -8,13 +8,14 @@ import android.widget.ImageView
 import androidx.fragment.app.DialogFragment
 import com.example.projekt_inz.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
 
 class AddTaskRFragment (
     private val listId: Long,                       // ID of the routine/list
     private val onTaskAdded: (String) -> Unit
 ) : DialogFragment() {
 
-    private lateinit var inputEt: EditText
+    private lateinit var inputEt: TextInputEditText
     private lateinit var addButton: FloatingActionButton
     private lateinit var closeButton: ImageView
 

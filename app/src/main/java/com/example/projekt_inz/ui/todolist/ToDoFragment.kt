@@ -79,7 +79,6 @@ class ToDoFragment : Fragment() {
                     fanfarePlayed = true
                 }
             } else {
-                // Reset when any task becomes unchecked
                 fanfarePlayed = false
             }
         }

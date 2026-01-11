@@ -13,5 +13,14 @@
         android:layout_height="wrap_content"
         android:textColor="@android:color/black"
         android:textSize="25sp"/>
+
+    <View
+        android:id="@+id/eventDot"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/calendar_event_dot"
+        android:visibility="gone" />
+
 </LinearLayout>
 

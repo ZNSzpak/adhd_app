@@ -5,17 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.ImageView
 import androidx.fragment.app.DialogFragment
 import com.example.projekt_inz.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
 
 class AddNoteDialogFragment(
     private val onNoteAdded: (NoteEntity) -> Unit
 ) : DialogFragment(){
 
-    private lateinit var textNote: EditText
+    private lateinit var textNote: TextInputEditText
     private lateinit var addButton: FloatingActionButton
     private lateinit var closeButton: ImageView
 

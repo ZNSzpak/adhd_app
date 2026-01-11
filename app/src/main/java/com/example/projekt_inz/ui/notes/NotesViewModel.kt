@@ -1,11 +1,8 @@
 package com.example.projekt_inz.ui.notes
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.projekt_inz.ui.routines.ButtonListEntry
-import com.example.projekt_inz.ui.routines.RoutinesRepository
 import kotlinx.coroutines.launch
 
 class NotesViewModel(private val repository: NotesRepository) : ViewModel() {

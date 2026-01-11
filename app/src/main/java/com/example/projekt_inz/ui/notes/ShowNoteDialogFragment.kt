@@ -29,24 +29,17 @@ class ShowNoteDialogFragment : DialogFragment() {
         val inflater = requireActivity().layoutInflater
         val view = inflater.inflate(R.layout.show_note_dialog, null)
 
-        // Find views in this inflated view
         val fullNoteText = view.findViewById<TextView>(R.id.fullNoteText)
         val closeBtn = view.findViewById<ImageView>(R.id.closeNote)
 
-        // Set note text (use empty string safe fallback)
         fullNoteText.text = arguments?.getString(ARG_NOTE_TEXT) ?: ""
 
-        // Wire the close button to dismiss this dialog (important: uses same 'view' instance)
         closeBtn.setOnClickListener {
             dismiss()
         }
 
-        // Build the AlertDialog with this view and return it
         val builder = AlertDialog.Builder(requireContext())
             .setView(view)
-
-        // Make the dialog non-cancelable via outside touch if you like:
-        // builder.setCancelable(false)
 
         return builder.create()
     }

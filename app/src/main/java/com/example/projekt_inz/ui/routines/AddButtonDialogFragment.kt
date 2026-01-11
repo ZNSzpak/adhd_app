@@ -8,6 +8,7 @@ import android.widget.ImageView
 import androidx.fragment.app.DialogFragment
 import com.example.projekt_inz.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
 
 class AddButtonDialogFragment(
     private val onSave: (String) -> Unit
@@ -42,7 +43,7 @@ class AddButtonDialogFragment(
 
         val closeBtn: ImageView = view.findViewById(R.id.todoClose)
         val addBtn: FloatingActionButton = view.findViewById(R.id.addButtonPopup)
-        val inputEt: EditText = view.findViewById(R.id.todoEt)
+        val inputEt: TextInputEditText = view.findViewById(R.id.todoEt)
 
         closeBtn.setOnClickListener { dismiss() }
 
