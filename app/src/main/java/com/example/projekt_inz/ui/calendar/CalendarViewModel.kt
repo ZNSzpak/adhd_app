@@ -3,10 +3,7 @@ package com.example.projekt_inz.ui.calendar
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import com.example.projekt_inz.ui.calendar.notifications.EventReminderWorker
+import com.example.projekt_inz.ui.calendar.notifications.AlarmScheduler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.time.LocalDate
@@ -18,9 +15,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
-import java.time.LocalTime
-import java.time.ZoneId
-import java.util.concurrent.TimeUnit
 
 class CalendarViewModel(
     private val repository: EventRepository
@@ -156,54 +150,41 @@ class CalendarViewModel(
 
     fun addEvent(event: EventEntity, context: Context) {
         viewModelScope.launch {
-            repository.insert(event)
-            scheduleEventNotification(event, context)
+
+            val eventIdLong: Long = repository.insert(event)
+            val eventId: Int = eventIdLong.toInt()
+
+            val savedEvent = event.copy(id = eventId)
+
+            val reminderTimeMillis = savedEvent.startTimeMillis()
+
+            if (reminderTimeMillis > System.currentTimeMillis()) {
+                AlarmScheduler.scheduleEventReminder(
+                    context = context,
+                    triggerAtMillis = reminderTimeMillis,
+                    eventId = savedEvent.id,
+                    eventName = savedEvent.name,
+                    eventTime = savedEvent.formatTimeRange()
+                )
+            }
         }
 
+    }
+
+    fun editEvent(oldEvent: EventEntity, updated: EventEntity, context: Context) {
+        viewModelScope.launch {
+            // Cancel old alarm
+            AlarmScheduler.cancelEventReminder(context, oldEvent.id)
+
+            // Save updated event (schedules new alarm)
+            addEvent(updated, context)
+        }
     }
 
     fun deleteEvent(event: EventEntity, context: Context) {
         viewModelScope.launch {
             repository.delete(event)
-            WorkManager.getInstance(context)
-                .cancelAllWorkByTag("event_${event.id}")
+            AlarmScheduler.cancelEventReminder(context, event.id)
         }
     }
-
-    fun scheduleEventNotification(event: EventEntity, context: Context) {
-
-        val eventDate = LocalDate.ofEpochDay(event.dateEpochDay)
-        val eventStart = LocalTime.of(
-            event.startMinute / 60,
-            event.startMinute % 60
-        )
-
-        val eventMillis = eventDate
-            .atTime(eventStart)
-            .atZone(ZoneId.systemDefault())
-            .toInstant()
-            .toEpochMilli()
-
-        val notifyMillis = eventMillis - TimeUnit.HOURS.toMillis(24)
-
-        val delay = notifyMillis - System.currentTimeMillis()
-        if (delay <= 0) return
-
-        val data = Data.Builder()
-            .putInt("eventId", event.id)
-            .putString("eventName", event.name)
-            .putLong("eventTimeMillis", eventMillis)
-            .build()
-
-        val request = OneTimeWorkRequestBuilder<EventReminderWorker>()
-            .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-            .setInputData(data)
-            .addTag("event_${event.id}") // 🔥 important
-            .build()
-
-        WorkManager
-            .getInstance(context)
-            .enqueue(request)
-    }
-
 }

@@ -25,7 +25,7 @@ interface EventDao {
     ): Flow<List<EventEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(event: EventEntity)
+    suspend fun insert(event: EventEntity) : Long
 
     @Delete
     suspend fun delete(event: EventEntity)

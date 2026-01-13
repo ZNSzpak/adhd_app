@@ -10,8 +10,6 @@ import java.time.LocalDate
 class CalendarViewHolder(itemView: View) :
     RecyclerView.ViewHolder(itemView){
 
-   // private var date: LocalDate? = null
-
     private val dayOfMonth: TextView =
         itemView.findViewById(R.id.cellDayText)
 
@@ -49,24 +47,5 @@ class CalendarViewHolder(itemView: View) :
 
         itemView.setOnClickListener { onClick(date) }
     }
-
-//    fun bind(date: LocalDate?, events: List<EventEntity>?, selectedDate: LocalDate) {
-//        this.date = date
-//
-//        dayOfMonth.text = ""
-//        dayOfMonth.setTextColor(Color.BLACK)
-//        parentView.setBackgroundResource(0)
-//
-//        if (date == null) return
-//
-//        dayOfMonth.text = date.dayOfMonth.toString()
-//
-//        when {
-//            date.isEqual(LocalDate.now()) -> parentView.setBackgroundColor(Color.LTGRAY)
-//            date.isEqual(selectedDate) -> parentView.setBackgroundColor(Color.parseColor("#ADD8E6"))
-//        }
-//    }
-
-
 }
 

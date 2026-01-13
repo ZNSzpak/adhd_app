@@ -48,6 +48,8 @@ class WeekViewAdapter(
     inner class WeekDayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val dayText: TextView = itemView.findViewById(R.id.cellDayText)
         private val parentView: View = itemView.findViewById(R.id.parentView)
+        private val eventDot: View = itemView.findViewById(R.id.eventDot)
+
 
         fun bind(date: LocalDate, selectedDate: LocalDate) {
             dayText.text = date.dayOfMonth.toString()
@@ -63,11 +65,12 @@ class WeekViewAdapter(
                     parentView.setBackgroundColor(Color.parseColor("#ADD8E6"))
             }
 
-//            itemView.setOnClickListener {
-//                selectedDate = date // update adapter selection
-//                notifyDataSetChanged() // refresh UI
-//                onDayClick(date)      // notify fragment
-//            }
+            eventDot.visibility =
+                if (events[date]?.isNotEmpty() == true)
+                    View.VISIBLE
+                else
+                    View.GONE
+
             itemView.setOnClickListener { onDayClick(date) }
         }
     }

@@ -23,6 +23,7 @@ import com.example.projekt_inz.ui.calendar.CalendarViewModelFactory
 import com.example.projekt_inz.ui.calendar.EditEventDialogFragment
 import com.example.projekt_inz.ui.calendar.EventDatabase
 import com.example.projekt_inz.ui.calendar.EventRepository
+import com.example.projekt_inz.ui.calendar.notifications.AlarmScheduler
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -94,9 +95,8 @@ class WeekViewFragment : Fragment() {
             events = emptyList(),
             onEdit = { event ->
                 EditEventDialogFragment(event) { updated ->
-                    viewModel.addEvent(updated, requireContext().applicationContext)
-                    WorkManager.getInstance(requireContext()).cancelUniqueWork("event-${event.id}")
-                    viewModel.scheduleEventNotification(event, requireContext())
+                    viewModel.editEvent(event, updated, requireContext().applicationContext)
+
                 }.show(parentFragmentManager, "EditEventDialog")
             },
             onDelete = { event ->
@@ -121,7 +121,7 @@ class WeekViewFragment : Fragment() {
 
             AddEventDialogFragment(selectedDate.toEpochDay()) { newEvent ->
                 viewModel.addEvent(newEvent, requireContext().applicationContext)
-                viewModel.scheduleEventNotification(newEvent, requireContext())
+
             }.show(parentFragmentManager, "AddEventDialog")
         }
     }

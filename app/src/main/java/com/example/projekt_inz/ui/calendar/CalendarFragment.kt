@@ -65,7 +65,7 @@ class CalendarFragment : Fragment() {
             val selectedDate = viewModel.selectedDate.value
 
             AddEventDialogFragment(selectedDate.toEpochDay()) { newEvent ->
-                viewModel.addEvent(newEvent, requireContext().applicationContext)
+                viewModel.addEvent(newEvent, requireContext())
             }.show(parentFragmentManager, "AddEventDialog")
         }
 
@@ -119,40 +119,6 @@ class CalendarFragment : Fragment() {
             }
         }
     }
-
-//    private fun observeViewModel() {
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-//
-//               launch{ viewModel.selectedDate.collect { date ->
-//                    calendarAdapter.selectDate(date)
-//                }}
-//
-//                // Month-Year label
-//                launch {
-//                    viewModel.monthYearText.collect { text ->
-//                        monthYearText.text = text
-//                    }
-//                }
-//
-//                // Days in month
-//                launch {
-//                    viewModel.daysInMonth.collect { days ->
-//                        calendarAdapter.submitDays(days)
-//                    }
-//                }
-//
-//                // Events for the month
-//                launch {
-//                    viewModel.eventsForMonth.collect { events ->
-//                        val eventsMap = events.groupBy { LocalDate.ofEpochDay(it.dateEpochDay) }
-//                        calendarAdapter.submitEvents(eventsMap)
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     private fun weeklyAction() {
         val bundle = Bundle().apply {
             putString("selectedDate", viewModel.selectedDate.value.toString())

@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [EventEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class EventDatabase : RoomDatabase() {
@@ -24,7 +24,9 @@ abstract class EventDatabase : RoomDatabase() {
                     context.applicationContext,
                     EventDatabase::class.java,
                     "event_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 instance
             }

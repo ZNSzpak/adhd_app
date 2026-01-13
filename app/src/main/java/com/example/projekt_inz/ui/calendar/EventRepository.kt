@@ -15,8 +15,8 @@ class EventRepository(private val eventDao: EventDao) {
         return eventDao.getEventsInRange(startDateEpochDay, endDateEpochDay)
     }
 
-    suspend fun insert(event: EventEntity) {
-        eventDao.insert(event)
+    suspend fun insert(event: EventEntity): Long {
+        return eventDao.insert(event)
     }
 
     suspend fun delete(event: EventEntity) {
