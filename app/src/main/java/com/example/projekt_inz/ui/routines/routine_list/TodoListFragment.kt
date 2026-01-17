@@ -53,8 +53,6 @@ class TodoListFragment : Fragment() {
         titleTextView = view.findViewById(R.id.todoListTitle)
         titleTextView.text = listName
 
-        //val listId = arguments?.getLong("listId") ?: 0
-
         taskListR = view.findViewById(R.id.taskListR)
         addButton = view.findViewById(R.id.addButton)
 
@@ -93,29 +91,21 @@ class TodoListFragment : Fragment() {
         taskListR.adapter = taskAdapter
     }
 
-//    private fun observeViewModel() {
-//        viewModel.tasks.observe(viewLifecycleOwner) { tasks ->
-//            taskAdapter.submitList(tasks.toList()) //
-//        }
-//    }
-
     private fun observeViewModel() {
         viewModel.tasks.observe(viewLifecycleOwner) { tasksFromDb ->
             val currentList = taskAdapter.currentList.toMutableList()
 
             val taskMap = tasksFromDb.associateBy { it.id }
 
-            // Keep current adapter order for existing tasks, update fields
             val updatedList = currentList.mapNotNull { oldTask ->
                 taskMap[oldTask.id]
             }.toMutableList()
 
-            // Add new tasks at the correct position
             val newTasks = tasksFromDb.filter { task ->
                 updatedList.none { it.id == task.id }
-            }.sortedBy { it.position } // sort by DB position
+            }.sortedBy { it.position }
             newTasks.forEach { newTask ->
-                // Insert new tasks at the correct index
+
                 val insertIndex = updatedList.indexOfFirst { it.position > newTask.position }
                 if (insertIndex == -1) updatedList.add(newTask)
                 else updatedList.add(insertIndex, newTask)
@@ -153,7 +143,7 @@ class TodoListFragment : Fragment() {
 
         WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
             "reset_routines",
-            ExistingPeriodicWorkPolicy.KEEP, // ensures only one worker exists
+            ExistingPeriodicWorkPolicy.KEEP,
             resetWork
         )
     }

@@ -9,11 +9,8 @@ interface RoutinesDao {
     @Query("SELECT * FROM todo_lists ORDER BY id ASC")
     fun getAllLists(): LiveData<List<ButtonListEntry>>
 
-//    @Query("SELECT * FROM todo_lists WHERE id = :id LIMIT 1")
-//    suspend fun getListById(id: Long): ButtonListEntry?
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertList(entry: ButtonListEntry): Long   // return ID!
+    suspend fun insertList(entry: ButtonListEntry): Long
 
     @Update
     suspend fun update(entry: ButtonListEntry)

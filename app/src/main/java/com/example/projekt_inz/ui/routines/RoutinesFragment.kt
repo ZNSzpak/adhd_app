@@ -89,7 +89,7 @@ class RoutinesFragment : Fragment() {
         }
 
         val navController = requireActivity()
-            .findNavController(R.id.nav_host_fragment_content_main) // replace with your NavHostFragment ID
+            .findNavController(R.id.nav_host_fragment_content_main)
 
         navController.navigate(R.id.actionMainListFragmentToTodoListFragment, bundle)
     }

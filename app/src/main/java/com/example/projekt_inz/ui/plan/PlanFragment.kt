@@ -1,7 +1,7 @@
 package com.example.projekt_inz.ui.plan
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -18,7 +18,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.projekt_inz.R
-import com.example.projekt_inz.ui.notes.AddNoteDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
 
@@ -73,6 +72,7 @@ class PlanFragment : Fragment() {
         setupAddButton()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupTable() {
 
         for (hour in 7..20) {
@@ -130,8 +130,8 @@ class PlanFragment : Fragment() {
             endMinute = block.endMinute,
             onEdit = { updatedBlock ->
                 EditBlockDialogFragment(updatedBlock) { updated ->
-                    viewModel.updateBlock(updated) // <-- this updates DB and triggers UI refresh
-                }.show(childFragmentManager, "EditBlockDialog")// use ViewModel directly
+                    viewModel.updateBlock(updated)
+                }.show(childFragmentManager, "EditBlockDialog")
             },
             onDelete = { idToDelete ->
                 viewModel.deleteBlockById(idToDelete)

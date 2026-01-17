@@ -12,14 +12,6 @@ class TaskAdapter (
     private val onChecked: (TaskEntity, Boolean) -> Unit,
     private val onMove: (Int, Int) -> Unit
 ) : ListAdapter<TaskEntity, TaskViewHolder>(TaskDiffCallback()) {
-//
-//    companion object DiffCallback : DiffUtil.ItemCallback<TaskEntity>() {
-//        override fun areItemsTheSame(oldItem: TaskEntity, newItem: TaskEntity): Boolean =
-//            oldItem.id == newItem.id
-//
-//        override fun areContentsTheSame(oldItem: TaskEntity, newItem: TaskEntity): Boolean =
-//            oldItem == newItem
-//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         val view = LayoutInflater.from(parent.context)

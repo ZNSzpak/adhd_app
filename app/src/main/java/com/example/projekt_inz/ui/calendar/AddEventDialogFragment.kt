@@ -72,11 +72,6 @@ class AddEventDialogFragment(
 
         startTimePicker.setIs24HourView(true)
         endTimePicker.setIs24HourView(true)
-
-//        selectedDate = Instant.ofEpochMilli(initialDateMillis)
-//            .atZone(ZoneId.systemDefault())
-//            .toLocalDate()
-
         updateDateButton()
 
         datePickerButton.setOnClickListener { openDatePicker() }

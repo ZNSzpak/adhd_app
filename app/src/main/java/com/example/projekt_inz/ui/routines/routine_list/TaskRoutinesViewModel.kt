@@ -10,17 +10,6 @@ class TaskRoutinesViewModel (private val repository: TaskRoutinesRepository, pri
 
     val tasks: LiveData<List<TaskEntityRoutines>> = repository.getTasksForList(listId)
 
-//    fun addTask(newText: String) {
-//        viewModelScope.launch {
-//            val task = TaskEntityRoutines(
-//                listId = listId,
-//                text = newText
-//            )
-//            repository.addTask(task)
-//        }
-//        Log.d("ADD_TASK", "Adding task to listId = $listId")
-//    }
-
     fun addTask(newText: String) {
         viewModelScope.launch {
 

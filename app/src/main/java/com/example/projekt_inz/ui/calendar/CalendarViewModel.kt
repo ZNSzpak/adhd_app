@@ -156,7 +156,7 @@ class CalendarViewModel(
 
             val savedEvent = event.copy(id = eventId)
 
-            val reminderTimeMillis = savedEvent.startTimeMillis()
+            val reminderTimeMillis = savedEvent.startTimeMillis() - 30 * 60 * 1000
 
             if (reminderTimeMillis > System.currentTimeMillis()) {
                 AlarmScheduler.scheduleEventReminder(
